@@ -161,6 +161,10 @@ class AnchorTargetLayer(caffe.Layer):
                 fg_inds, size=(len(fg_inds) - num_fg), replace=False)
             labels[disable_inds] = -1
 
+        # TODO: Evan
+        # Remove labels that overlap with AVOID
+        # Perhaps add AVOID as a bottom blob for this layer and as top blob for first layer?
+
         # subsample negative labels if we have too many
         num_bg = cfg.TRAIN.RPN_BATCHSIZE - np.sum(labels == 1)
         bg_inds = np.where(labels == 0)[0]

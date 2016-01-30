@@ -39,4 +39,5 @@ def _which(program):
 if _which(MATLAB) is None:
     msg = ("MATLAB command '{}' not found. "
            "Please add '{}' to your PATH.").format(MATLAB, MATLAB)
-    raise EnvironmentError(msg)
+    print(msg)
+    # raise EnvironmentError(msg)

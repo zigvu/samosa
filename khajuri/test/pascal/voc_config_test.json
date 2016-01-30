@@ -1,0 +1,13 @@
+{
+  "mode": "test",
+  "iteration_id": "voc_2007_trainval_after_change",
+  "gpu_device_id": 1,
+  "positive_classes": [
+    "aeroplane", "bicycle", "bird", "boat",
+    "bottle", "bus", "car", "cat", "chair",
+    "cow", "diningtable", "dog", "horse",
+    "motorbike", "person", "pottedplant",
+    "sheep", "sofa", "train", "tvmonitor"
+  ],
+  "avoid_classes": ["__AVOID__"]
+}
