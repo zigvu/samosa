@@ -10,7 +10,7 @@ from chia.train.train_config import TrainConfig
 from chia.train.train_templater import TrainTemplater
 from chia.train.train_dataset import TrainDataset
 from chia.train.fine_tuner import FineTuner
-from tools.file_utils import FileUtils
+from tools.files.file_utils import FileUtils
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

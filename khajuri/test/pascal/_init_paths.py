@@ -11,7 +11,5 @@ def add_path(path):
 samosa_path = '/home/ubuntu/samosa'
 add_path(samosa_path)
 
-# Add chia to PYTHONPATH
-chia_path = os.path.join(samosa_path, 'chia')
-add_path(chia_path)
+# Add chia related paths
 import chia._init_paths

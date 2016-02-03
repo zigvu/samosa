@@ -3,8 +3,8 @@
 import logging
 
 from chia._init_paths import CHIA_ROOT
-from tools.file_regexer import FileRegexer
-from tools.file_utils import FileUtils # TODO: remove
+from tools.files.file_regexer import FileRegexer
+from tools.files.file_utils import FileUtils # TODO: remove
 
 from fast_rcnn.config import cfg
 

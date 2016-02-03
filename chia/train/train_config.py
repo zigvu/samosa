@@ -5,7 +5,7 @@ import os
 from easydict import EasyDict as edict
 
 from chia._init_paths import CHIA_ROOT
-from tools.file_utils import FileUtils
+from tools.files.file_utils import FileUtils
 
 from fast_rcnn.config import cfg, cfg_from_file
 
