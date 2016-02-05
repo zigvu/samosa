@@ -33,12 +33,7 @@ if __name__ == '__main__':
     if args.fps != None:
         writtenFrameNumbers = frameExtractor.extract_sequential(args.fps)
     elif args.frame_numbers_file != None:
-        frameNumbers = []
-        with open(args.frame_numbers_file, 'r') as f:
-            for line in f.readlines():
-                for num in line.split():
-                    frameNumbers.append(int(num))
-        writtenFrameNumbers = frameExtractor.extract_non_sequential(frameNumbers)
+        writtenFrameNumbers = frameExtractor.extract_based_on_file(args.frame_numbers_file)
     else:
         raise RuntimeError("Please specify either `fps` or `frame_numbers`")
     logging.debug('Extracted {} frames to {}'.format(len(writtenFrameNumbers), args.output_path))

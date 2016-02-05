@@ -16,12 +16,22 @@ class FrameExtractor(object):
     def __init__(self, clip_path, output_path):
         self.clip_path = clip_path
         if not os.path.exists(self.clip_path):
-            raise FrameExtractorError("Input clip couldn't be found at {}".format(self.clip_path))
+            raise FrameExtractorError("Input clip not found: {}".format(self.clip_path))
         self.tempFramesPath = os.path.join(output_path, 'temp_frames')
         FileUtils.mkdir_p(self.tempFramesPath)
         self.framesPath = os.path.join(output_path, 'frames')
         FileUtils.mkdir_p(self.framesPath)
         self.frameNumbersFile = os.path.join(output_path, 'frame_numbers.txt')
+
+    def extract_based_on_file(self, file_name):
+        if not os.path.exists(file_name):
+            raise FrameExtractorError("Input frame numbers file not found: {}".format(self.clip_path))
+        frameNumbers = []
+        with open(file_name, 'r') as f:
+            for line in f.readlines():
+                for num in line.split():
+                    frameNumbers.append(int(num))
+        return self.extract_non_sequential(frameNumbers)
 
     def extract_non_sequential(self, frame_numbers):
         # extract every frame
@@ -83,5 +93,5 @@ class FrameExtractor(object):
                 f.write("%d " % wfn)
             f.write("\n")
         # clean up
-        # FileUtils.rm_rf(self.tempFramesPath)
+        FileUtils.rm_rf(self.tempFramesPath)
         return writtenFrameNumbers
