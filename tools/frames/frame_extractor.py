@@ -8,6 +8,7 @@ import shutil
 from fractions import gcd
 
 from tools.files.file_utils import FileUtils
+from tools.files.file_changer import FileChanger
 
 class FrameExtractorError(Exception):
     pass
@@ -21,16 +22,10 @@ class FrameExtractor(object):
         FileUtils.mkdir_p(self.tempFramesPath)
         self.framesPath = os.path.join(output_path, 'frames')
         FileUtils.mkdir_p(self.framesPath)
-        self.frameNumbersFile = os.path.join(output_path, 'frame_numbers.txt')
+        self.frameNumbersFile = os.path.join(output_path, 'extracted_frame_numbers.txt')
 
     def extract_based_on_file(self, file_name):
-        if not os.path.exists(file_name):
-            raise FrameExtractorError("Input frame numbers file not found: {}".format(self.clip_path))
-        frameNumbers = []
-        with open(file_name, 'r') as f:
-            for line in f.readlines():
-                for num in line.split():
-                    frameNumbers.append(int(num))
+        frameNumbers = FileChanger.int_array_reader(file_name)
         return self.extract_non_sequential(frameNumbers)
 
     def extract_non_sequential(self, frame_numbers):

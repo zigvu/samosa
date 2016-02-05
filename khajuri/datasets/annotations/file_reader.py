@@ -7,16 +7,18 @@ from easydict import EasyDict as edict
 
 class FileReader(object):
     def __init__(self, annotation_file):
+        self._annotation_file = annotation_file
         assert os.path.exists(annotation_file), \
-                'Annotation file does not exist: {}'.format(annotation_file)
+            'Annotation file does not exist: {}'.format(annotation_file)
         with open(annotation_file, 'r') as f:
             self._anno = edict(json.load(f))
         logging.debug("Read annotation file {}".format(annotation_file))
 
     def get_frame_file(self, output_folder):
-        return "{}/{}/frames/{}.png".format(
-            output_folder, self._anno.clip_id, self._anno.frame_number
-        )
+        frameFile = "{}/{}.png".format(output_folder, self._anno.frame_number)
+        assert os.path.exists(frameFile), \
+            'Corresponding frame file does not exist: {}'.format(self._annotation_file)
+        return frameFile
 
     def get_image_index(self):
         return "{}_{}".format(self._anno.clip_id, self._anno.frame_number)

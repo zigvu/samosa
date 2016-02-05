@@ -3,7 +3,7 @@
 import logging
 
 from chia._init_paths import CHIA_ROOT
-from tools.files.file_regexer import FileRegexer
+from tools.files.file_changer import FileChanger
 from tools.files.file_utils import FileUtils # TODO: remove
 
 from fast_rcnn.config import cfg
@@ -29,7 +29,7 @@ class TrainTemplater(object):
         replace = {
             'ZIGVU_TRAIN_FILE': cfg.ZIGVU.FILES.PROTOTXT_TRAIN
         }
-        FileRegexer.regex(template, replace, cfg.ZIGVU.FILES.PROTOXT_SOLVER)
+        FileChanger.regex(template, replace, cfg.ZIGVU.FILES.PROTOXT_SOLVER)
 
     def _template_train_prototxt(self):
         template = '{}/models/ZF/zigvu_end2end/train.prototxt'.format(CHIA_ROOT)
@@ -38,4 +38,4 @@ class TrainTemplater(object):
             'ZIGVU_NUM_CLASSES': num_classes, # num_classes
             'ZIGVU_BBOX_PRED_OUTPUT': num_classes * 4 # num_classes * 4
         }
-        FileRegexer.regex(template, replace, cfg.ZIGVU.FILES.PROTOTXT_TRAIN)
+        FileChanger.regex(template, replace, cfg.ZIGVU.FILES.PROTOTXT_TRAIN)
