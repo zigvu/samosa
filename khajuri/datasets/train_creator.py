@@ -1,9 +1,7 @@
 import os
 import logging
-import xml.dom.minidom as minidom
 from collections import OrderedDict
 
-# import _init_paths
 from khajuri.datasets.annotations.file_reader import FileReader
 from tools.files.file_changer import FileChanger
 

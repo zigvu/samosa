@@ -11,5 +11,5 @@
     "motorbike", "person", "pottedplant",
     "sheep", "sofa", "train", "tvmonitor"
   ],
-  "avoid_classes": ["__AVOID__"]
+  "avoid_classes": ["_AVOID_"]
 }

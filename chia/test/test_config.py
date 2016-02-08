@@ -35,7 +35,7 @@ class TestConfig(object):
     def _set_configs_from_hash(self, config_hash):
         ch = config_hash
         if ch['mode'] != 'test':
-            raise TrainConfigError("Supplied config is not a testing config")
+            raise TestConfigError("Supplied config is not a testing config")
         cfg.GPU_ID = int(ch['gpu_device_id'])
 
         # zigvu specific configs
