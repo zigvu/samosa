@@ -105,6 +105,12 @@ class RoIDataLayer(caffe.Layer):
             top[idx].reshape(1, 4)
             self._name_to_top_map['gt_boxes'] = idx
             idx += 1
+
+            # add avoid bboxes
+            if 'ZIGVU' in cfg:
+                top[idx].reshape(1, 4)
+                self._name_to_top_map['avoid_boxes'] = idx
+                idx += 1
         else: # not using RPN
             # rois blob: holds R regions of interest, each is a 5-tuple
             # (n, x1, y1, x2, y2) specifying an image batch index n and a

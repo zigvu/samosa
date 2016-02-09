@@ -5,6 +5,7 @@ layer {
   top: 'data'
   top: 'im_info'
   top: 'gt_boxes'
+  top: 'avoid_boxes'
   python_param {
     module: 'roi_data_layer.layer'
     layer: 'RoIDataLayer'
@@ -270,6 +271,7 @@ layer {
   bottom: 'gt_boxes'
   bottom: 'im_info'
   bottom: 'data'
+  bottom: 'avoid_boxes'
   top: 'rpn_labels'
   top: 'rpn_bbox_targets'
   top: 'rpn_bbox_inside_weights'

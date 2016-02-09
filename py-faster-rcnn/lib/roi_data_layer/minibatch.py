@@ -42,6 +42,14 @@ def get_minibatch(roidb, num_classes):
         blobs['im_info'] = np.array(
             [[im_blob.shape[2], im_blob.shape[3], im_scales[0]]],
             dtype=np.float32)
+        # add avoid bboxes
+        if 'ZIGVU' in cfg:
+            if len(roidb[0]['avoid_boxes']) > 0:
+                avoid_boxes = np.asarray(roidb[0]['avoid_boxes'], dtype=np.float32)
+            else:
+                avoid_boxes = np.asarray([], dtype=np.float32)
+            avoid_boxes *= im_scales[0]
+            blobs['avoid_boxes'] = avoid_boxes
     else: # not using RPN
         # Now, build the region of interest and label blobs
         rois_blob = np.zeros((0, 5), dtype=np.float32)

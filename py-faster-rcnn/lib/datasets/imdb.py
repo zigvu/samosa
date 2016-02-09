@@ -12,6 +12,7 @@ from utils.cython_bbox import bbox_overlaps
 import numpy as np
 import scipy.sparse
 import datasets
+from fast_rcnn.config import cfg
 
 class imdb(object):
     """Image database."""
@@ -110,6 +111,17 @@ class imdb(object):
                      'gt_overlaps' : self.roidb[i]['gt_overlaps'],
                      'gt_classes' : self.roidb[i]['gt_classes'],
                      'flipped' : True}
+
+            # flip avoid boxes
+            if 'ZIGVU' in cfg:
+                boxes = self.roidb[i]['avoid_boxes'].copy()
+                oldx1 = boxes[:, 0].copy()
+                oldx2 = boxes[:, 2].copy()
+                boxes[:, 0] = widths[i] - oldx2 - 1
+                boxes[:, 2] = widths[i] - oldx1 - 1
+                assert (boxes[:, 2] >= boxes[:, 0]).all()
+                entry['avoid_boxes'] = boxes
+
             self.roidb.append(entry)
         self._image_index = self._image_index * 2
 

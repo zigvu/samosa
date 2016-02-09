@@ -87,7 +87,14 @@ class TrainCreator(object):
             for bbox in fileReader.get_bboxes(cls):
                 bboxes.append(bbox)
 
+        # Load avoid bounding boxes into a data frame.
+        avoid_bboxes = []
+        for cls in cfg.ZIGVU.AVOID_CLASSES:
+            for bbox in fileReader.get_bboxes(cls):
+                avoid_bboxes.append(bbox)
+
         return OrderedDict({
             'image_filename': fileReader.get_frame_file(frameOutputFolder),
-            'bboxes': bboxes
+            'bboxes': bboxes,
+            'avoid_bboxes': avoid_bboxes
         })

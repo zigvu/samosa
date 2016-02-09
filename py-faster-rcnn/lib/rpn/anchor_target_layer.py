@@ -80,14 +80,20 @@ class AnchorTargetLayer(caffe.Layer):
         gt_boxes = bottom[1].data
         # im_info
         im_info = bottom[2].data[0, :]
+        if 'ZIGVU' in cfg:
+            # avoid boxes (x1, y1, x2, y2)
+            avoid_boxes = bottom[4].data
 
-        if 0 and DEBUG:
+        if DEBUG:
             print ''
             print 'im_size: ({}, {})'.format(im_info[0], im_info[1])
             print 'scale: {}'.format(im_info[2])
             print 'height, width: ({}, {})'.format(height, width)
-            #print 'rpn: gt_boxes.shape', gt_boxes.shape
-            #print 'rpn: gt_boxes', gt_boxes
+            print 'rpn: gt_boxes.shape', gt_boxes.shape
+            print 'rpn: gt_boxes', gt_boxes
+            if 'ZIGVU' in cfg:
+                print 'rpn: avoid_boxes.shape', avoid_boxes.shape
+                print 'rpn: avoid_boxes', avoid_boxes
 
         # 1. Generate proposals from bbox deltas and shifted anchors
         shift_x = np.arange(0, width) * self._feat_stride
@@ -117,6 +123,19 @@ class AnchorTargetLayer(caffe.Layer):
         if DEBUG:
             print 'total_anchors', total_anchors
             print 'inds_inside', len(inds_inside)
+
+        # remove avoid intersecting anchors
+        if 'ZIGVU' in cfg:
+            if avoid_boxes.shape[0] > 0:
+                avoid_overlaps = bbox_overlaps(
+                    np.ascontiguousarray(all_anchors, dtype=np.float),
+                    np.ascontiguousarray(avoid_boxes, dtype=np.float))
+                # note: this can be creater than `total_anchors` since
+                # we might have multiple avoid_boxes
+                inds_nonavoid = np.where(avoid_overlaps <= 0)[0]
+                inds_inside = np.intersect1d(inds_inside, inds_nonavoid)
+                if DEBUG:
+                    print 'inds_nonavoid', len(inds_nonavoid)
 
         # keep only inside anchors
         anchors = all_anchors[inds_inside, :]
@@ -160,10 +179,6 @@ class AnchorTargetLayer(caffe.Layer):
             disable_inds = npr.choice(
                 fg_inds, size=(len(fg_inds) - num_fg), replace=False)
             labels[disable_inds] = -1
-
-        # TODO: Evan
-        # Remove labels that overlap with AVOID
-        # Perhaps add AVOID as a bottom blob for this layer and as top blob for first layer?
 
         # subsample negative labels if we have too many
         num_bg = cfg.TRAIN.RPN_BATCHSIZE - np.sum(labels == 1)

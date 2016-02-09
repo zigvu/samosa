@@ -100,7 +100,15 @@ class TrainDataset(datasets.imdb):
 
         overlaps = scipy.sparse.csr_matrix(overlaps)
 
+        # Add avoid bboxes
+        avoids = data['avoid_bboxes']
+        num_avoids = len(avoids)
+        avoid_boxes = np.zeros((num_avoids, 4), dtype=np.uint16)
+        for ix, obj in enumerate(avoids):
+            avoid_boxes[ix, :] = [obj['x0'], obj['y0'], obj['x2'], obj['y2']]
+
         return {'boxes' : boxes,
                 'gt_classes': gt_classes,
                 'gt_overlaps' : overlaps,
+                'avoid_boxes': avoid_boxes,
                 'flipped' : False}

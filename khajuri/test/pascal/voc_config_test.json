@@ -9,5 +9,5 @@
     "motorbike", "person", "pottedplant",
     "sheep", "sofa", "train", "tvmonitor"
   ],
-  "avoid_classes": ["_AVOID_"]
+  "avoid_classes": []
 }
