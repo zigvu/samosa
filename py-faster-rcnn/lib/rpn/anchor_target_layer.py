@@ -80,7 +80,7 @@ class AnchorTargetLayer(caffe.Layer):
         gt_boxes = bottom[1].data
         # im_info
         im_info = bottom[2].data[0, :]
-        if 'ZIGVU' in cfg:
+        if cfg.IS_ZIGVU_RUN:
             # avoid boxes (x1, y1, x2, y2)
             avoid_boxes = bottom[4].data
 
@@ -91,7 +91,7 @@ class AnchorTargetLayer(caffe.Layer):
             print 'height, width: ({}, {})'.format(height, width)
             print 'rpn: gt_boxes.shape', gt_boxes.shape
             print 'rpn: gt_boxes', gt_boxes
-            if 'ZIGVU' in cfg:
+            if cfg.IS_ZIGVU_RUN:
                 print 'rpn: avoid_boxes.shape', avoid_boxes.shape
                 print 'rpn: avoid_boxes', avoid_boxes
 
@@ -125,7 +125,7 @@ class AnchorTargetLayer(caffe.Layer):
             print 'inds_inside', len(inds_inside)
 
         # remove avoid intersecting anchors
-        if 'ZIGVU' in cfg:
+        if cfg.IS_ZIGVU_RUN:
             if avoid_boxes.shape[0] > 0:
                 avoid_overlaps = bbox_overlaps(
                     np.ascontiguousarray(all_anchors, dtype=np.float),
@@ -133,9 +133,13 @@ class AnchorTargetLayer(caffe.Layer):
                 # note: this can be creater than `total_anchors` since
                 # we might have multiple avoid_boxes
                 inds_nonavoid = np.where(avoid_overlaps <= 0)[0]
+                lenPrior_inds_inside = len(inds_inside)
                 inds_inside = np.intersect1d(inds_inside, inds_nonavoid)
                 if DEBUG:
-                    print 'inds_nonavoid', len(inds_nonavoid)
+                    print 'remove for avoid', (lenPrior_inds_inside - len(inds_inside))
+            else:
+                if DEBUG:
+                    print 'remove for avoid 0'
 
         # keep only inside anchors
         anchors = all_anchors[inds_inside, :]

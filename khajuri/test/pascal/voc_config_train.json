@@ -1,8 +1,9 @@
 {
   "mode": "train",
-  "iteration_id": "voc_2007_trainval_after_change",
+  "iteration_id": "voc_2007_trainval",
   "parent_iteration_id": "ZF.v2.caffemodel",
   "iteration_type": "major",
+  "num_caffe_iteration": 100,
   "gpu_device_id": 1,
   "positive_classes": [
     "aeroplane", "bicycle", "bird", "boat",

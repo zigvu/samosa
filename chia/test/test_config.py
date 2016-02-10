@@ -15,6 +15,7 @@ class TestConfigError(Exception):
 class TestConfig(object):
     def __init__(self, config_hash):
         logging.info("Configuring testing")
+        cfg.IS_ZIGVU_RUN = True
         # create new config variables
         self._create_zigvu_configs()
         # set defaults from file

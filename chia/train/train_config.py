@@ -15,6 +15,7 @@ class TrainConfigError(Exception):
 class TrainConfig(object):
     def __init__(self, config_hash):
         logging.info("Configuring training")
+        cfg.IS_ZIGVU_RUN = True
         # create new config variables
         self._create_zigvu_configs()
         # set defaults from file
@@ -45,6 +46,7 @@ class TrainConfig(object):
         # add background class with index 0
         cfg.ZIGVU.POSITIVE_CLASSES =  ['__background__'] + ch['positive_classes']
         cfg.ZIGVU.AVOID_CLASSES = ch['avoid_classes']
+        cfg.ZIGVU.MAX_ITERS = int(ch['num_caffe_iteration'])
 
     def _create_zigvu_configs(self):
         cfg.ZIGVU = edict()

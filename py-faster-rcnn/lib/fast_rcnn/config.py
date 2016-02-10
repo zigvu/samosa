@@ -27,6 +27,9 @@ __C = edict()
 #   from fast_rcnn_config import cfg
 cfg = __C
 
+# Zigvu run
+__C.IS_ZIGVU_RUN = False
+
 #
 # Training options
 #

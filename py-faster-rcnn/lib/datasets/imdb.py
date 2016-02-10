@@ -113,7 +113,7 @@ class imdb(object):
                      'flipped' : True}
 
             # flip avoid boxes
-            if 'ZIGVU' in cfg:
+            if cfg.IS_ZIGVU_RUN:
                 boxes = self.roidb[i]['avoid_boxes'].copy()
                 oldx1 = boxes[:, 0].copy()
                 oldx2 = boxes[:, 2].copy()

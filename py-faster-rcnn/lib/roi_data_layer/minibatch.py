@@ -43,7 +43,7 @@ def get_minibatch(roidb, num_classes):
             [[im_blob.shape[2], im_blob.shape[3], im_scales[0]]],
             dtype=np.float32)
         # add avoid bboxes
-        if 'ZIGVU' in cfg:
+        if cfg.IS_ZIGVU_RUN:
             if len(roidb[0]['avoid_boxes']) > 0:
                 avoid_boxes = np.asarray(roidb[0]['avoid_boxes'], dtype=np.float32)
             else:

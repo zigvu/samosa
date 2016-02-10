@@ -107,7 +107,7 @@ class RoIDataLayer(caffe.Layer):
             idx += 1
 
             # add avoid bboxes
-            if 'ZIGVU' in cfg:
+            if cfg.IS_ZIGVU_RUN:
                 top[idx].reshape(1, 4)
                 self._name_to_top_map['avoid_boxes'] = idx
                 idx += 1
