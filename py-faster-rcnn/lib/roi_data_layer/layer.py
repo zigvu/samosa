@@ -17,6 +17,8 @@ import numpy as np
 import yaml
 from multiprocessing import Process, Queue
 
+DEBUG = False
+
 class RoIDataLayer(caffe.Layer):
     """Fast R-CNN data layer used for training."""
 
@@ -68,13 +70,21 @@ class RoIDataLayer(caffe.Layer):
         self._shuffle_roidb_inds()
         if cfg.TRAIN.USE_PREFETCH:
             self._blob_queue = Queue(10)
-            self._prefetch_process = BlobFetcher(self._blob_queue,
+            if cfg.IS_ZIGVU_RUN:
+                self._prefetch_process = ZigvuBlobFetcher(self._blob_queue,
+                                                 self._roidb,
+                                                 self._num_classes)
+            else:
+                self._prefetch_process = BlobFetcher(self._blob_queue,
                                                  self._roidb,
                                                  self._num_classes)
             self._prefetch_process.start()
             # Terminate the child process when the parent exists
             def cleanup():
-                print 'Terminating BlobFetcher'
+                if cfg.IS_ZIGVU_RUN:
+                    print 'Terminating BlobFetcher'
+                else:
+                    print 'Terminating ZigvuBlobFetcher'
                 self._prefetch_process.terminate()
                 self._prefetch_process.join()
             import atexit
@@ -195,6 +205,95 @@ class BlobFetcher(Process):
 
     def run(self):
         print 'BlobFetcher started'
+        while True:
+            db_inds = self._get_next_minibatch_inds()
+            minibatch_db = [self._roidb[i] for i in db_inds]
+            blobs = get_minibatch(minibatch_db, self._num_classes)
+            self._queue.put(blobs)
+
+
+class ZigvuBlobFetcher(Process):
+    """Class for prefetching blobs for zigvu data in a separate process."""
+    def __init__(self, queue, roidb, num_classes):
+        super(ZigvuBlobFetcher, self).__init__()
+        self._queue = queue
+        self._roidb = roidb
+        self._num_classes = num_classes
+        self._major_idx, self._minor_idx = self._find_major_minor_idx()
+        self._has_minor = len(self._minor_idx) > 0
+        # fix the random seed for reproducibility
+        np.random.seed(cfg.RNG_SEED)
+        # set major minor vars
+        self._perm_major = None
+        self._cur_major = 0
+        self._shuffle_roidb_inds_major()
+        if self._has_minor:
+            self._perm_minor = None
+            self._cur_minor = 0
+            self._last_was_minor = False
+            self._shuffle_roidb_inds_minor()
+
+    def _find_major_minor_idx(self):
+        major_idx = []
+        minor_idx = []
+        for idx, r in enumerate(self._roidb):
+            if r['is_minor_iteration']:
+                minor_idx.append(idx)
+            else:
+                major_idx.append(idx)
+        print "Num of : Major: {}, Minor: {}".format(len(major_idx), len(minor_idx))
+        return np.asarray(major_idx), np.asarray(minor_idx)
+
+    def _shuffle_roidb_inds_major(self):
+        """Randomly permute the major training roidb."""
+        if DEBUG:
+            print "Shuffle major inds"
+        self._perm_major = np.random.permutation(self._major_idx)
+        self._cur_major = 0
+
+    def _shuffle_roidb_inds_minor(self):
+        """Randomly permute the minor training roidb."""
+        if DEBUG:
+            print "Shuffle minor inds"
+        self._perm_minor = np.random.permutation(self._minor_idx)
+        self._cur_minor = 0
+
+    def _get_next_minibatch_inds_major(self):
+        """Next major minibatch."""
+        if self._cur_major + cfg.TRAIN.IMS_PER_BATCH >= len(self._major_idx):
+            self._shuffle_roidb_inds_major()
+        if DEBUG:
+            print "Get next major inds"
+
+        db_inds = self._perm_major[self._cur_major:self._cur_major + cfg.TRAIN.IMS_PER_BATCH]
+        self._cur_major += cfg.TRAIN.IMS_PER_BATCH
+        return db_inds
+
+    def _get_next_minibatch_inds_minor(self):
+        """Next minor minibatch."""
+        if self._cur_minor + cfg.TRAIN.IMS_PER_BATCH >= len(self._minor_idx):
+            self._shuffle_roidb_inds_minor()
+        if DEBUG:
+            print "Get next minor inds"
+
+        db_inds = self._perm_minor[self._cur_minor:self._cur_minor + cfg.TRAIN.IMS_PER_BATCH]
+        self._cur_minor += cfg.TRAIN.IMS_PER_BATCH
+        return db_inds
+
+    def _get_next_minibatch_inds(self):
+        """Return the roidb indices for the next minibatch."""
+        if self._has_minor:
+            if self._last_was_minor:
+                self._last_was_minor = False
+                return self._get_next_minibatch_inds_major()
+            else:
+                self._last_was_minor = True
+                return self._get_next_minibatch_inds_minor()
+        else:
+            return self._get_next_minibatch_inds_major()
+
+    def run(self):
+        print 'ZigvuBlobFetcher started'
         while True:
             db_inds = self._get_next_minibatch_inds()
             minibatch_db = [self._roidb[i] for i in db_inds]

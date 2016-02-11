@@ -110,5 +110,7 @@ class TrainDataset(datasets.imdb):
         return {'boxes' : boxes,
                 'gt_classes': gt_classes,
                 'gt_overlaps' : overlaps,
+                'flipped' : False,
                 'avoid_boxes': avoid_boxes,
-                'flipped' : False}
+                'image_filename' : data['image_filename'],
+                'is_minor_iteration' : data['is_minor_iteration']}

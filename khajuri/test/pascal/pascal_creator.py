@@ -118,5 +118,6 @@ class PascalCreator(object):
         return OrderedDict({
             'image_filename': image_filename,
             'bboxes': bboxes,
-            'avoid_bboxes': []
+            'avoid_bboxes': [],
+            'is_minor_iteration': False
         })

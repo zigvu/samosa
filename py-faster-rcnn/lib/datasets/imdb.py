@@ -121,6 +121,8 @@ class imdb(object):
                 boxes[:, 2] = widths[i] - oldx1 - 1
                 assert (boxes[:, 2] >= boxes[:, 0]).all()
                 entry['avoid_boxes'] = boxes
+                entry['image_filename'] = self.roidb[i]['image_filename']
+                entry['is_minor_iteration'] = self.roidb[i]['is_minor_iteration']
 
             self.roidb.append(entry)
         self._image_index = self._image_index * 2

@@ -96,5 +96,6 @@ class TrainCreator(object):
         return OrderedDict({
             'image_filename': fileReader.get_frame_file(frameOutputFolder),
             'bboxes': bboxes,
-            'avoid_bboxes': avoid_bboxes
+            'avoid_bboxes': avoid_bboxes,
+            'is_minor_iteration': fileReader.is_minor_iteration()
         })

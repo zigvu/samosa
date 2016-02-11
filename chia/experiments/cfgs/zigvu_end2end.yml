@@ -6,6 +6,10 @@ TRAIN:
   RPN_POSITIVE_OVERLAP: 0.7
   RPN_BATCHSIZE: 256
   PROPOSAL_METHOD: gt
+  # note: the code flow for using different sampling for minor iteration
+  # requires using prefetch (and automatically removes aspect grouping)
+  ASPECT_GROUPING: False
+  USE_PREFETCH: True
 TEST:
   HAS_RPN: True
 ZIGVU:

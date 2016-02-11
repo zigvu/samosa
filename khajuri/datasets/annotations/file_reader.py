@@ -33,6 +33,9 @@ class FileReader(object):
                 bboxes.append(self._bbox_normalize(bbox, cls))
         return bboxes
 
+    def is_minor_iteration(self):
+        return self._anno.is_minor == True
+
     def _bbox_normalize(self, bbox, cls):
         x0 = min(bbox.x0, bbox.x1, bbox.x2, bbox.x3)
         y0 = min(bbox.y0, bbox.y1, bbox.y2, bbox.y3)
