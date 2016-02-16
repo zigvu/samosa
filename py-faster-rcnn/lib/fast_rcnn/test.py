@@ -182,7 +182,11 @@ def im_detect(net, im, boxes=None):
         scores = scores[inv_index, :]
         pred_boxes = pred_boxes[inv_index, :]
 
-    return scores, pred_boxes
+    if cfg.IS_ZIGVU_RUN:
+        fc7 = net.blobs['fc7'].data.copy()
+        return scores, pred_boxes, fc7
+    else:
+        return scores, pred_boxes
 
 def vis_detections(im, class_name, dets, thresh=0.3):
     """Visual debugging of detections."""

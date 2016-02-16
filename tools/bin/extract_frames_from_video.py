@@ -31,9 +31,9 @@ if __name__ == '__main__':
 
     frameExtractor = FrameExtractor(args.video_path, args.output_path)
     if args.fps != None:
-        writtenFrameNumbers = frameExtractor.extract_sequential(args.fps)
+        fnFileMap = frameExtractor.extract_sequential(args.fps)
     elif args.frame_numbers_file != None:
-        writtenFrameNumbers = frameExtractor.extract_based_on_file(args.frame_numbers_file)
+        fnFileMap = frameExtractor.extract_based_on_file(args.frame_numbers_file)
     else:
         raise RuntimeError("Please specify either `fps` or `frame_numbers`")
-    logging.debug('Extracted {} frames to {}'.format(len(writtenFrameNumbers), args.output_path))
+    logging.debug('Extracted {} frames to {}'.format(len(fnFileMap.keys()), args.output_path))

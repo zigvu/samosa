@@ -1,7 +1,7 @@
 {
   "mode": "test",
   "iteration_id": "cv1",
-  "gpu_device_id": 1,
+  "gpu_device_id": 0,
   "positive_classes": [
     "cocacola", "castrol", "continentalTire",
     "fifa", "visa", "yingli"

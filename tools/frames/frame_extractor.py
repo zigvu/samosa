@@ -6,6 +6,7 @@ import glob
 import subprocess
 import shutil
 from fractions import gcd
+from collections import OrderedDict
 
 from tools.files.file_utils import FileUtils
 from tools.files.file_changer import FileChanger
@@ -45,6 +46,7 @@ class FrameExtractor(object):
         #  -f image2 -qscale 0 -vsync 0 frames/%04d.png
         subprocess.check_call([
             "ffmpeg", "-i", self.clip_path,
+            "-loglevel", "panic",
             "-vf", "select='not(mod(n\,{}))'".format(self.fps),
             "-f", "image2",
             "-q:v", "0",
@@ -62,14 +64,14 @@ class FrameExtractor(object):
             frameSorter.append([frameNumber, framePath])
         frameSorter.sort(key = lambda x: x[0])
         # once frames are sorted, move frames to correct location
-        writtenFrameNumbers = []
+        fnFileMap = OrderedDict()
         if len(frame_numbers) == 0:
             # sequential FPS based extraction
             curFrameNumber = 0
             for fr in frameSorter:
                 fileName = os.path.join(self.framesPath, "{}.png".format(curFrameNumber))
                 shutil.move(fr[1], fileName)
-                writtenFrameNumbers.append(curFrameNumber)
+                fnFileMap[curFrameNumber] = fileName
                 curFrameNumber += self.fps
         else:
             # non-sequential array based extraction
@@ -78,15 +80,15 @@ class FrameExtractor(object):
                 if frame_numbers[fnIdx] == fr[0]:
                     fileName = os.path.join(self.framesPath, "{}.png".format(frame_numbers[fnIdx]))
                     shutil.move(fr[1], fileName)
-                    writtenFrameNumbers.append(frame_numbers[fnIdx])
+                    fnFileMap[frame_numbers[fnIdx]] = fileName
                     fnIdx += 1
                 if fnIdx >= len(frame_numbers):
                     break
         # save frame numbers to file
         with open(self.frameNumbersFile, 'w') as f:
-            for wfn in writtenFrameNumbers:
+            for wfn in fnFileMap.keys():
                 f.write("%d " % wfn)
             f.write("\n")
         # clean up
         FileUtils.rm_rf(self.tempFramesPath)
-        return writtenFrameNumbers
+        return fnFileMap

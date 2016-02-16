@@ -51,11 +51,15 @@ class TestConfig(object):
         cfg.ZIGVU.POSITIVE_CLASSES = []
         cfg.ZIGVU.AVOID_CLASSES = []
         cfg.ZIGVU.FOLDERS = edict()
+        cfg.ZIGVU.FOLDERS.OUTPUT = '/tmp'
         cfg.ZIGVU.FILES = edict()
         cfg.ZIGVU.MAX_ITERS = 100
+        # test thresholds
+        cfg.ZIGVU.detection_thresh = 0.1
+        cfg.ZIGVU.nms_box_max_per_image = 100
 
     def _create_folders(self):
-        cfg.ZIGVU.FOLDERS.ROOT = os.path.join('/tmp', cfg.ZIGVU.ITERATION_ID)
+        cfg.ZIGVU.FOLDERS.ROOT = os.path.join(cfg.ZIGVU.FOLDERS.OUTPUT, cfg.ZIGVU.ITERATION_ID)
         cfg.ZIGVU.FOLDERS.CACHE = os.path.join(cfg.ZIGVU.FOLDERS.ROOT, 'cache')
         FileUtils.mkdir_p(cfg.ZIGVU.FOLDERS.CACHE)
         cfg.ZIGVU.FOLDERS.PROTOTXT = os.path.join(cfg.ZIGVU.FOLDERS.ROOT, 'prototxt')

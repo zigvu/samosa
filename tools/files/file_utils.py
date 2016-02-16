@@ -24,6 +24,8 @@ class FileUtils(object):
     def symlink(linkto, dstname):
         """Util to symlink path"""
         if os.path.exists(dstname):
+            if os.path.abspath(linkto) == os.path.abspath(dstname):
+                return
             os.unlink(dstname)
         os.symlink(linkto, dstname)
 

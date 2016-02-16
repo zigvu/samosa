@@ -17,3 +17,4 @@ Pillow>=2.3.0
 six>=1.1.0
 easydict
 shapely
+sklearn

@@ -38,7 +38,8 @@ class TrainConfig(object):
         if ch['mode'] != 'train':
             raise TrainConfigError("Supplied config is not a training config")
         cfg.GPU_ID = int(ch['gpu_device_id'])
-
+        # output folder
+        cfg.ZIGVU.FOLDERS.OUTPUT = ch['output_folder']
         # zigvu specific configs
         cfg.ZIGVU.ITERATION_ID = ch['iteration_id']
         cfg.ZIGVU.PARENT_ITERATION_ID = ch['parent_iteration_id']
@@ -56,11 +57,12 @@ class TrainConfig(object):
         cfg.ZIGVU.POSITIVE_CLASSES = []
         cfg.ZIGVU.AVOID_CLASSES = []
         cfg.ZIGVU.FOLDERS = edict()
+        cfg.ZIGVU.FOLDERS.OUTPUT = '/tmp'
         cfg.ZIGVU.FILES = edict()
         cfg.ZIGVU.MAX_ITERS = 100
 
     def _create_folders(self):
-        cfg.ZIGVU.FOLDERS.ROOT = os.path.join('/tmp', cfg.ZIGVU.ITERATION_ID)
+        cfg.ZIGVU.FOLDERS.ROOT = os.path.join(cfg.ZIGVU.FOLDERS.OUTPUT, cfg.ZIGVU.ITERATION_ID)
         cfg.ZIGVU.FOLDERS.CACHE = os.path.join(cfg.ZIGVU.FOLDERS.ROOT, 'cache')
         FileUtils.mkdir_p(cfg.ZIGVU.FOLDERS.CACHE)
         cfg.ZIGVU.FOLDERS.PROTOTXT = os.path.join(cfg.ZIGVU.FOLDERS.ROOT, 'prototxt')
@@ -72,7 +74,6 @@ class TrainConfig(object):
     def _create_files(self):
         cfg.ZIGVU.FILES.PROTOXT_SOLVER = os.path.join(cfg.ZIGVU.FOLDERS.PROTOTXT, 'solver.prototxt')
         cfg.ZIGVU.FILES.PROTOTXT_TRAIN = os.path.join(cfg.ZIGVU.FOLDERS.PROTOTXT, 'train.prototxt')
-        #cfg.ZIGVU.FILES.TEST_SOLVER = os.path.join(cfg.ZIGVU.FOLDERS.PROTOTXT, 'test.prototxt')
 
         cfg.ZIGVU.FILES.OUTPUT_MODEL = os.path.join(cfg.ZIGVU.FOLDERS.MODEL, cfg.ZIGVU.ITERATION_ID)
         cfg.ZIGVU.FILES.PARENT_MODEL = os.path.join(cfg.ZIGVU.FOLDERS.MODEL, cfg.ZIGVU.PARENT_ITERATION_ID)

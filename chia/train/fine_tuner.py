@@ -3,7 +3,7 @@
 import logging
 import numpy as np
 
-from fast_rcnn.config import cfg, get_output_dir
+from fast_rcnn.config import cfg
 from fast_rcnn.train import get_training_roidb, train_net
 import caffe
 
@@ -15,7 +15,6 @@ class FineTuner(object):
     def __init__(self, dataset):
         logging.info("Start caffe training")
         self.imdb = dataset
-        # TODO: logic for major/minor iteration
         self._max_iters = cfg.ZIGVU.MAX_ITERS
 
     def train(self):
