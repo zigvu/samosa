@@ -12,6 +12,7 @@ class ThreadWorker(threading.Thread):
 
     def run(self):
         logging.info('%s: Starting' % self)
+        self.task.start()
         while True:
             next_object = self.input_queue.get()
             if next_object is None:
@@ -41,6 +42,7 @@ class ProcessWorker(multiprocessing.Process):
     def run(self):
         logging.info('Starting Process %s with pid %s task as %s' %
                 (self.name, self.pid, self.task))
+        self.task.start()
         while True:
             next_object = self.input_queue.get()
             if next_object is None:

@@ -25,7 +25,7 @@ def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Test on zigvu model on clips')
     parser.add_argument('--config_file', dest='config_file',
-                        help='Path to config file for training', required=True)
+                        help='Path to config file for testing', required=True)
     parser.add_argument('--test_model', dest='test_model',
                         help='Caffe model for testing', required=True)
     parser.add_argument('--clip_folder', dest='clip_folder',
@@ -39,7 +39,7 @@ def parse_args():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    logging.debug('Start training.')
+    logging.debug('Start testing.')
 
     args = parse_args()
 
@@ -82,6 +82,7 @@ if __name__ == '__main__':
         # save to pickle
         pickleTime.tic()
         with open(clip.result_path, 'wb') as f:
+            clip.framedb = None
             pickle.dump(clip, f)
         pickleTime.toc()
         logging.info("Avg. times: FrameExtractor {}, Caffe: {}, Pickle: {}".format(

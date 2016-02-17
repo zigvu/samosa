@@ -8,11 +8,14 @@ class PreddbCreatorError(Exception):
 
 class PreddbCreator(Task):
     def __init__(self, gpuId):
-        self.frameEvaluater = FrameEvaluater(gpuId)
+        self.gpuId = gpuId
         self.fileSaver = FileSaver()
 
+    def start(self):
+        self.frameEvaluater = FrameEvaluater(self.gpuId)
+
     def process(self, clip):
-        clip.preddb = self.frameEvaluater.evaluate(clipData)
+        clip.preddb = self.frameEvaluater.evaluate(clip.framedb)
         clip = self.fileSaver.process(clip) # TODO: move to after pp
         return clip
 
