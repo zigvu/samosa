@@ -3,6 +3,8 @@
 import logging
 import numpy as np
 
+from chia.configs.chia_config import chia_cfg
+
 from fast_rcnn.config import cfg
 from fast_rcnn.nms_wrapper import nms
 
@@ -12,9 +14,9 @@ class BboxReducerError(Exception):
 
 class BboxReducer(object):
     def __init__(self):
-        self.num_classes = len(cfg.ZIGVU.POSITIVE_CLASSES)
-        self.thresh = cfg.ZIGVU.detection_thresh
-        self.max_per_image = cfg.ZIGVU.nms_box_max_per_image
+        self.num_classes = len(chia_cfg.TEST.POSITIVE_CLASSES)
+        self.thresh = chia_cfg.TEST.NMS.DET_THRESH
+        self.max_per_image = chia_cfg.TEST.NMS.BBOX_PER_IMG
 
     def evaluate(self, scores, boxes, fc7):
         all_fc7_inds = []
@@ -43,7 +45,7 @@ class BboxReducer(object):
                             all_fc7_inds.append(idx)
                             fc7_inds[j-1].append(len(all_fc7_inds) - 1)
                         else:
-                            fc7_inds.append(all_fc7_inds.index(idx))
+                            fc7_inds[j-1].append(all_fc7_inds.index(idx))
                     # end for idx
                 # end if
             # end if len(dets)

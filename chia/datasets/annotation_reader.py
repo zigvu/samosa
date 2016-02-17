@@ -5,7 +5,7 @@ from easydict import EasyDict as edict
 
 """Read annotations from file"""
 
-class FileReader(object):
+class AnnotationReader(object):
     def __init__(self, annotation_file):
         self._annotation_file = annotation_file
         assert os.path.exists(annotation_file), \

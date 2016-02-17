@@ -6,7 +6,7 @@ import argparse
 
 import _init_paths
 from tools.frames.image_manipulator import ImageManipulator
-from khajuri.datasets.annotations.file_reader import FileReader
+from chia.datasets.annotation_reader import AnnotationReader
 
 def parse_args():
     """Parse input arguments."""
@@ -24,10 +24,10 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     args = parse_args()
 
-    fileReader = FileReader(args.annotation_file)
+    annoReader = AnnotationReader(args.annotation_file)
     imageManipulator = ImageManipulator(args.frame_file)
-    for cls in fileReader.get_classes():
-        for bbox in fileReader.get_bboxes(cls):
+    for cls in annoReader.get_classes():
+        for bbox in annoReader.get_bboxes(cls):
             imageManipulator.addLabeledBbox(bbox, cls)
     outputFileName = os.path.join(args.output_path, os.path.basename(args.frame_file))
     imageManipulator.saveImage(outputFileName)

@@ -4,6 +4,7 @@ import logging
 from collections import OrderedDict
 import numpy as np
 
+from chia.configs.chia_config import chia_cfg
 from chia.test.bbox_reducer import BboxReducer
 
 from fast_rcnn.config import cfg
@@ -24,8 +25,8 @@ class FrameEvaluater(object):
         caffe.set_mode_gpu()
         caffe.set_device(gpuId)
         # boost interface requires explicit conversion to ascii from unicode
-        prototxt_test = str(cfg.ZIGVU.FILES.PROTOTXT_TEST)
-        caffemodel = str(cfg.ZIGVU.FILES.CURRENT_MODEL)
+        prototxt_test = str(chia_cfg.TEST.FILES.PROTOTXT_TEST)
+        caffemodel = str(chia_cfg.TEST.FILES.CURRENT_MODEL)
 
         self.net = caffe.Net(prototxt_test, caffemodel, caffe.TEST)
 

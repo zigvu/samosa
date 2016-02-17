@@ -2,9 +2,9 @@
 
 import logging
 import os
-from easydict import EasyDict as edict
 
 from chia._init_paths import CHIA_ROOT
+from chia.configs.chia_config import chia_cfg
 from tools.files.file_utils import FileUtils
 
 from fast_rcnn.config import cfg, cfg_from_file
@@ -16,10 +16,8 @@ class TrainConfig(object):
     def __init__(self, config_hash):
         logging.info("Configuring training")
         cfg.IS_ZIGVU_RUN = True
-        # create new config variables
-        self._create_zigvu_configs()
-        # set defaults from file
-        cfg_file = '{}/experiments/cfgs/zigvu_end2end.yml'.format(CHIA_ROOT)
+        # override fast_rcnn settings
+        cfg_file = os.path.join(CHIA_ROOT, 'configs/experiments/cfgs/zigvu_end2end.yml')
         cfg_from_file(cfg_file)
         # set values from config_hash
         self._set_configs_from_hash(config_hash)
@@ -27,10 +25,11 @@ class TrainConfig(object):
         self._create_folders()
         # log config for debug
         logging.debug('Config from Rasbari: %s', config_hash)
-        logging.debug('Current config: %s', cfg)
+        logging.debug('Current fast_rcnn config: %s', cfg)
+        logging.debug('Current chia config: %s', chia_cfg)
 
     def reset_folders(self):
-        FileUtils.rm_rf(cfg.ZIGVU.FOLDERS.ROOT)
+        FileUtils.rm_rf(chia_cfg.TRAIN.FOLDERS.ROOT)
         self._create_folders()
 
     def _set_configs_from_hash(self, config_hash):
@@ -38,42 +37,33 @@ class TrainConfig(object):
         if ch['mode'] != 'train':
             raise TrainConfigError("Supplied config is not a training config")
         cfg.GPU_ID = int(ch['gpu_device_id'])
-        # output folder
-        cfg.ZIGVU.FOLDERS.OUTPUT = ch['output_folder']
         # zigvu specific configs
-        cfg.ZIGVU.ITERATION_ID = ch['iteration_id']
-        cfg.ZIGVU.PARENT_ITERATION_ID = ch['parent_iteration_id']
-        cfg.ZIGVU.IS_MAJOR_ITERATION = ch['iteration_type'] == 'major'
+        chia_cfg.TRAIN.ITERATION_ID = ch['iteration_id']
+        chia_cfg.TRAIN.PARENT_ITERATION_ID = ch['parent_iteration_id']
+        chia_cfg.TRAIN.IS_MAJOR_ITERATION = ch['iteration_type'] == 'major'
+        chia_cfg.TRAIN.MAX_ITERS = int(ch['num_caffe_iteration'])
         # add background class with index 0
-        cfg.ZIGVU.POSITIVE_CLASSES =  ['__background__'] + ch['positive_classes']
-        cfg.ZIGVU.AVOID_CLASSES = ch['avoid_classes']
-        cfg.ZIGVU.MAX_ITERS = int(ch['num_caffe_iteration'])
-
-    def _create_zigvu_configs(self):
-        cfg.ZIGVU = edict()
-        cfg.ZIGVU.ITERATION_ID = None
-        cfg.ZIGVU.PARENT_ITERATION_ID = None
-        cfg.ZIGVU.IS_MAJOR_ITERATION = False
-        cfg.ZIGVU.POSITIVE_CLASSES = []
-        cfg.ZIGVU.AVOID_CLASSES = []
-        cfg.ZIGVU.FOLDERS = edict()
-        cfg.ZIGVU.FOLDERS.OUTPUT = '/tmp'
-        cfg.ZIGVU.FILES = edict()
-        cfg.ZIGVU.MAX_ITERS = 100
+        chia_cfg.TRAIN.POSITIVE_CLASSES =  ['__background__'] + ch['positive_classes']
+        chia_cfg.TRAIN.AVOID_CLASSES = ch['avoid_classes']
+        # output folder
+        chia_cfg.TRAIN.FOLDERS.OUTPUT = ch['output_folder']
 
     def _create_folders(self):
-        cfg.ZIGVU.FOLDERS.ROOT = os.path.join(cfg.ZIGVU.FOLDERS.OUTPUT, cfg.ZIGVU.ITERATION_ID)
-        cfg.ZIGVU.FOLDERS.CACHE = os.path.join(cfg.ZIGVU.FOLDERS.ROOT, 'cache')
-        FileUtils.mkdir_p(cfg.ZIGVU.FOLDERS.CACHE)
-        cfg.ZIGVU.FOLDERS.PROTOTXT = os.path.join(cfg.ZIGVU.FOLDERS.ROOT, 'prototxt')
-        FileUtils.mkdir_p(cfg.ZIGVU.FOLDERS.PROTOTXT)
-        cfg.ZIGVU.FOLDERS.MODEL = os.path.join(cfg.ZIGVU.FOLDERS.ROOT, 'model')
-        FileUtils.mkdir_p(cfg.ZIGVU.FOLDERS.MODEL)
+        chia_cfg.TRAIN.FOLDERS.ROOT = os.path.join(
+                chia_cfg.TRAIN.FOLDERS.OUTPUT, chia_cfg.TRAIN.ITERATION_ID)
+        chia_cfg.TRAIN.FOLDERS.CACHE = os.path.join(chia_cfg.TRAIN.FOLDERS.ROOT, 'cache')
+        FileUtils.mkdir_p(chia_cfg.TRAIN.FOLDERS.CACHE)
+        chia_cfg.TRAIN.FOLDERS.PROTOTXT = os.path.join(chia_cfg.TRAIN.FOLDERS.ROOT, 'prototxt')
+        FileUtils.mkdir_p(chia_cfg.TRAIN.FOLDERS.PROTOTXT)
+        chia_cfg.TRAIN.FOLDERS.MODEL = os.path.join(chia_cfg.TRAIN.FOLDERS.ROOT, 'model')
+        FileUtils.mkdir_p(chia_cfg.TRAIN.FOLDERS.MODEL)
         self._create_files()
 
     def _create_files(self):
-        cfg.ZIGVU.FILES.PROTOXT_SOLVER = os.path.join(cfg.ZIGVU.FOLDERS.PROTOTXT, 'solver.prototxt')
-        cfg.ZIGVU.FILES.PROTOTXT_TRAIN = os.path.join(cfg.ZIGVU.FOLDERS.PROTOTXT, 'train.prototxt')
+        chia_cfg.TRAIN.FILES.PROTOXT_SOLVER = os.path.join(
+                chia_cfg.TRAIN.FOLDERS.PROTOTXT, 'solver.prototxt')
+        chia_cfg.TRAIN.FILES.PROTOTXT_TRAIN = os.path.join(
+                chia_cfg.TRAIN.FOLDERS.PROTOTXT, 'train.prototxt')
 
-        cfg.ZIGVU.FILES.OUTPUT_MODEL = os.path.join(cfg.ZIGVU.FOLDERS.MODEL, cfg.ZIGVU.ITERATION_ID)
-        cfg.ZIGVU.FILES.PARENT_MODEL = os.path.join(cfg.ZIGVU.FOLDERS.MODEL, cfg.ZIGVU.PARENT_ITERATION_ID)
+        chia_cfg.TRAIN.FILES.OUTPUT_MODEL = os.path.join(chia_cfg.TRAIN.FOLDERS.MODEL, chia_cfg.TRAIN.ITERATION_ID)
+        chia_cfg.TRAIN.FILES.PARENT_MODEL = os.path.join(chia_cfg.TRAIN.FOLDERS.MODEL, chia_cfg.TRAIN.PARENT_ITERATION_ID)

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib as mpl
 
-from khajuri.datasets.annotations.rectangle import Rectangle
+from tools.frames.rectangle import Rectangle
 
 class ImageManipulator(object):
   """Manipulate single image using opencv and plt tools"""

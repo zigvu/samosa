@@ -1,4 +1,4 @@
-"""Common utilities for file operations."""
+"""Regex in file."""
 
 import logging
 import os

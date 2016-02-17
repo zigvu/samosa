@@ -4,6 +4,8 @@ import xml.dom.minidom as minidom
 from collections import OrderedDict
 
 import _init_paths
+from chia.configs.chia_config import chia_cfg
+
 from fast_rcnn.config import cfg
 
 """File to load Pascal dataset as if it was from Rasbari"""
@@ -112,7 +114,7 @@ class PascalCreator(object):
             x2 = float(get_data_from_tag(obj, 'xmax')) - 1
             y2 = float(get_data_from_tag(obj, 'ymax')) - 1
             cls = str(get_data_from_tag(obj, "name")).lower().strip()
-            if cls in cfg.ZIGVU.POSITIVE_CLASSES:
+            if cls in chia_cfg.TRAIN.POSITIVE_CLASSES:
                 bboxes.append(OrderedDict({'x0': x0, 'y0': y0, 'x2': x2, 'y2': y2, 'cls': cls}))
 
         return OrderedDict({

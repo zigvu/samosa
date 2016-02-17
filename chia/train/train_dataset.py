@@ -6,6 +6,8 @@ import numpy as np
 import scipy.sparse
 import cPickle
 
+from chia.configs.chia_config import chia_cfg
+
 from fast_rcnn.config import cfg, cfg_from_file
 import datasets
 import datasets.imdb
@@ -16,15 +18,15 @@ class TrainDatasetError(Exception):
 class TrainDataset(datasets.imdb):
     def __init__(self, data_creator):
         logging.info("Creating training dataset")
-        datasets.imdb.__init__(self, cfg.ZIGVU.ITERATION_ID)
+        datasets.imdb.__init__(self, chia_cfg.TRAIN.ITERATION_ID)
         self._data_creator = data_creator
-        self._classes = cfg.ZIGVU.POSITIVE_CLASSES
+        self._classes = chia_cfg.TRAIN.POSITIVE_CLASSES
         self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
 
         # caching
         self._gt_roidb = None
-        self._dataset_cache_file = os.path.join(cfg.ZIGVU.FOLDERS.CACHE, self.name + '_dataset.pkl')
-        self._roidb_cache_file = os.path.join(cfg.ZIGVU.FOLDERS.CACHE, self.name + '_gt_roidb.pkl')
+        self._dataset_cache_file = os.path.join(chia_cfg.TRAIN.FOLDERS.CACHE, self.name + '_dataset.pkl')
+        self._roidb_cache_file = os.path.join(chia_cfg.TRAIN.FOLDERS.CACHE, self.name + '_gt_roidb.pkl')
         self._data, self._image_index = self._cache_dataset()
 
     def _cache_dataset(self):

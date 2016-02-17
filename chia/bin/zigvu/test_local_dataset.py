@@ -8,19 +8,22 @@ import json
 import pickle
 
 import _init_paths
-from tools.files.file_utils import FileUtils
-from khajuri.datasets.test_creator import TestCreator
-
+from chia.configs.chia_config import chia_cfg
+from chia.datasets.test_creator import TestCreator
 from chia.test.test_config import TestConfig
 from chia.test.test_templater import TestTemplater
 from chia.test.frame_evaluater import FrameEvaluater
+
+from khajuri.multi.clip import Clip
+
+from tools.files.file_utils import FileUtils
 
 from fast_rcnn.config import cfg
 from utils.timer import Timer
 
 def parse_args():
     """Parse input arguments."""
-    parser = argparse.ArgumentParser(description='Test on zigvu model on clip')
+    parser = argparse.ArgumentParser(description='Test on zigvu model on clips')
     parser.add_argument('--config_file', dest='config_file',
                         help='Path to config file for training', required=True)
     parser.add_argument('--test_model', dest='test_model',
@@ -47,7 +50,7 @@ if __name__ == '__main__':
     # config.reset_folders()
     templater = TestTemplater()
 
-    FileUtils.symlink(args.test_model, cfg.ZIGVU.FILES.CURRENT_MODEL)
+    FileUtils.symlink(args.test_model, chia_cfg.TEST.FILES.CURRENT_MODEL)
 
     # keep track of times
     frameExtractorTime = Timer()
@@ -60,21 +63,26 @@ if __name__ == '__main__':
         logging.info("Working on file {}".format(clipFile))
         clipNumber = os.path.splitext(os.path.basename(clipFile))[0]
         clipOutPath = os.path.join(args.output_path, clipNumber)
+
+        clip = Clip()
+        clip.clip_id = clipNumber
+        clip.clip_path = clipFile
+        clip.result_path = os.path.join(clipOutPath, 'clip.pkl')
+
         # extract frames
         frameExtractorTime.tic()
         framedbPath = os.path.join(clipOutPath, 'framedb')
-        testCreator = TestCreator(clipFile, 5, framedbPath)
-        framedb = testCreator.get_framedb()
+        testCreator = TestCreator(5, framedbPath)
+        clip.framedb = testCreator.get_framedb(clip.clip_path)
         frameExtractorTime.toc()
         # evaluate frames
         caffeTime.tic()
-        preddb = frameEvaluater.evaluate(framedb)
+        clip.preddb = frameEvaluater.evaluate(clip.framedb)
         caffeTime.toc()
         # save to pickle
         pickleTime.tic()
-        preddbPath = os.path.join(clipOutPath, 'preddb.pkl')
-        with open(preddbPath, 'wb') as f:
-            pickle.dump(preddb, f)
+        with open(clip.result_path, 'wb') as f:
+            pickle.dump(clip, f)
         pickleTime.toc()
         logging.info("Avg. times: FrameExtractor {}, Caffe: {}, Pickle: {}".format(
             frameExtractorTime.average_time, caffeTime.average_time, pickleTime.average_time))

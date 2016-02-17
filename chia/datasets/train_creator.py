@@ -2,7 +2,8 @@ import os
 import logging
 from collections import OrderedDict
 
-from khajuri.datasets.annotations.file_reader import FileReader
+from chia.configs.chia_config import chia_cfg
+from chia.datasets.annotation_reader import AnnotationReader
 from tools.files.file_changer import FileChanger
 
 from fast_rcnn.config import cfg
@@ -69,33 +70,33 @@ class TrainCreator(object):
                 annoFile = os.path.join(
                     self._annotation_path, clipId, 'annotations', '{}.json'.format(fn)
                 )
-                fileReader = FileReader(annoFile)
-                index = fileReader.get_image_index()
-                d = self._load_annotation(fileReader, frameOutputFolder)
+                annoReader = AnnotationReader(annoFile)
+                index = annoReader.get_image_index()
+                d = self._load_annotation(annoReader, frameOutputFolder)
                 if len(d['bboxes']) > 0:
                     image_index.append(index)
                     data[index] = d
         return image_index, data
 
-    def _load_annotation(self, fileReader, frameOutputFolder):
+    def _load_annotation(self, annoReader, frameOutputFolder):
         """
         Load image and bounding boxes info
         """
         # Load object bounding boxes into a data frame.
         bboxes = []
-        for cls in cfg.ZIGVU.POSITIVE_CLASSES:
-            for bbox in fileReader.get_bboxes(cls):
+        for cls in chia_cfg.TRAIN.POSITIVE_CLASSES:
+            for bbox in annoReader.get_bboxes(cls):
                 bboxes.append(bbox)
 
         # Load avoid bounding boxes into a data frame.
         avoid_bboxes = []
-        for cls in cfg.ZIGVU.AVOID_CLASSES:
-            for bbox in fileReader.get_bboxes(cls):
+        for cls in chia_cfg.TRAIN.AVOID_CLASSES:
+            for bbox in annoReader.get_bboxes(cls):
                 avoid_bboxes.append(bbox)
 
         return OrderedDict({
-            'image_filename': fileReader.get_frame_file(frameOutputFolder),
+            'image_filename': annoReader.get_frame_file(frameOutputFolder),
             'bboxes': bboxes,
             'avoid_bboxes': avoid_bboxes,
-            'is_minor_iteration': fileReader.is_minor_iteration()
+            'is_minor_iteration': annoReader.is_minor_iteration()
         })
