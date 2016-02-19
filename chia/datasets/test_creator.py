@@ -16,7 +16,7 @@ class TestCreator(object):
         FileUtils.mkdir_p(self.temp_path)
 
     def get_framedb(self, clip_path):
-        logging.debug("Extract framedb from {}".format(clip_path))
+        # logging.debug("Extract framedb from {}".format(clip_path))
         # extract frames
         frameExtractor = FrameExtractor(clip_path, self.temp_path)
         fnFileMap = frameExtractor.extract_sequential(self.fps)

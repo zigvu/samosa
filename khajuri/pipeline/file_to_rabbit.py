@@ -5,25 +5,25 @@ from khajuri.configs.khajuri_config import khajuri_cfg
 from khajuri.multi.clip import Clip
 
 class FileToRabbit(threading.Thread):
-    def __init__(self, preddbQueue):
+    def __init__(self, fileStoredQueue):
         threading.Thread.__init__(self)
-        self.preddbQueue = preddbQueue
+        self.fileStoredQueue = fileStoredQueue
 
     def run(self):
-        logging.debug('Starting FileToRabbit thread')
+        logging.info('Starting FileToRabbit thread')
         if khajuri_cfg.RABBIT.IS_RABBIT_RUN:
             # TODO: setup rabbit
             pass
         while True:
-            clip = self.preddbQueue.get()
+            clip = self.fileStoredQueue.get()
             if clip is None:
                 # Poison pill means shutdown
-                logging.debug('Exiting FileToRabbit thread')
-                self.preddbQueue.task_done()
+                logging.info('Exiting FileToRabbit thread')
+                self.fileStoredQueue.task_done()
                 break
             if khajuri_cfg.RABBIT.IS_RABBIT_RUN:
                 # TODO: write to rabbit
                 pass
-            logging.debug('Done pred for clip id {}'.format(clip.clip_id))
-            self.preddbQueue.task_done()
+            logging.debug('FileToRabbit: process clip: {}'.format(clip.clip_id))
+            self.fileStoredQueue.task_done()
         return

@@ -11,7 +11,7 @@ class RabbitToClip(threading.Thread):
         self.exitQueue = exitQueue
 
     def run(self):
-        logging.debug('Starting RabbitToClip thread')
+        logging.info('Starting RabbitToClip thread')
         if khajuri_cfg.RABBIT.IS_RABBIT_RUN:
             # TODO: setup rabbit
             pass
@@ -24,10 +24,10 @@ class RabbitToClip(threading.Thread):
                 clip.clip_id = None
             if clip.clip_id is None:
                 # Poison pill means shutdown
-                logging.debug('Exiting RabbitToClip thread')
+                logging.info('Exiting RabbitToClip thread')
                 # notify exit listeners
                 self.exitQueue.put(None)
                 break
-            logging.debug('Putting clip id {} in queue'.format(clip.clip_id))
+            logging.debug('RabbitToClip: process clip: {}'.format(clip.clip_id))
             self.clipdbQueue.put(clip)
         return

@@ -1,6 +1,6 @@
 class Task(object):
-    def __init__(self):
-        pass
+    def __init__(self, taskName):
+        self.taskName = taskName
 
     def start(self):
         raise NotImplementedError
@@ -9,4 +9,4 @@ class Task(object):
         raise NotImplementedError
 
     def __str__(self):
-        raise NotImplementedError
+        return self.taskName

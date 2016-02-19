@@ -15,7 +15,7 @@ class ClipToFramedb(object):
         for i in xrange(khajuri_cfg.PIPELINE.FRAMEDB_NUM_WORKERS):
             if khajuri_cfg.PIPELINE.IS_DRY_RUN:
                 from khajuri.tasks.dummy_task import DummyTask
-                framedbCreator = DummyTask()
+                framedbCreator = DummyTask('FramedbCreator')
             else:
                 from khajuri.tasks.framedb_creator import FramedbCreator
                 tempPath = os.path.join(khajuri_cfg.PIPELINE.TEMPFS, "clipToFramedb_{}".format(i))

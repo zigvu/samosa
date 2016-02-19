@@ -57,11 +57,9 @@ if __name__ == '__main__':
 
     caffeTime.tic()
     runPipeline = RunPipeline()
-    runPipeline.start()
 
     allClipFiles = glob.glob("{}/*.mp4".format(args.clip_folder))
     for clipFile in allClipFiles:
-        logging.info("Working on file {}".format(clipFile))
         clipNumber = os.path.splitext(os.path.basename(clipFile))[0]
         clipOutPath = os.path.join(args.output_path, clipNumber)
 
@@ -71,8 +69,9 @@ if __name__ == '__main__':
         clip.result_path = os.path.join(clipOutPath, 'clip.pkl')
 
         runPipeline.clipdbQueue.put(clip)
-        logging.debug('Putting clip id {} in queue'.format(clip.clip_id))
+        logging.debug('RabbitToClip: process clip: {}'.format(clip.clip_id))
 
+    runPipeline.start()
     runPipeline.join()
     caffeTime.toc()
     logging.info("Total time for all clip evaluation: {}".format(caffeTime.total_time))

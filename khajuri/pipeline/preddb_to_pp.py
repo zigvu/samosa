@@ -15,7 +15,7 @@ class PreddbToPp(object):
         for i in xrange(khajuri_cfg.PIPELINE.PP_NUM_WORKERS):
             if khajuri_cfg.PIPELINE.IS_DRY_RUN:
                 from khajuri.tasks.dummy_task import DummyTask
-                postProcessor = DummyTask()
+                postProcessor = DummyTask('PostProcessor')
             else:
                 from khajuri.tasks.post_processor import PostProcessor
                 postProcessor = PostProcessor(

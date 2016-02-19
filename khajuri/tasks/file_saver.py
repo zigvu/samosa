@@ -10,18 +10,16 @@ class FileSaverError(Exception):
 
 class FileSaver(Task):
     def __init__(self):
-        pass
+        Task.__init__(self, 'FileSaver')
 
     def start(self):
         pass
 
     def process(self, clip):
+        logging.debug('{}: process clip: {}'.format(self.taskName, clip.clip_id))
         folder = os.path.dirname(clip.result_path)
         FileUtils.mkdir_p(folder)
         # TODO: write to hdf5 instead of np
         with open(clip.result_path, 'wb') as f:
             pickle.dump(clip, f)
         return clip
-
-    def __str__(self):
-        return 'FileSaver'

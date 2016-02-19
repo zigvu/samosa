@@ -15,7 +15,7 @@ class FramedbToPreddb(object):
         for gpuId in khajuri_cfg.PIPELINE.GPU_IDS:
             if khajuri_cfg.PIPELINE.IS_DRY_RUN:
                 from khajuri.tasks.dummy_task import DummyTask
-                preddbCreator = DummyTask()
+                preddbCreator = DummyTask('PreddbCreator')
             else:
                 from khajuri.tasks.preddb_creator import PreddbCreator
                 preddbCreator = PreddbCreator(gpuId)

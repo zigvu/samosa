@@ -13,7 +13,7 @@ class RunPipelineError(Exception):
 class RunPipeline(object):
     def __init__(self):
         self.exitQueue = JoinableQueue()
-        self.clipdbQueue = JoinableQueue(maxsize=khajuri_cfg.PIPELINE.CLIP_Q_SIZE)
+        self.clipdbQueue = JoinableQueue()
         self.framedbQueue = JoinableQueue(maxsize=khajuri_cfg.PIPELINE.FRAMEDB_Q_SIZE)
         self.preddbQueue = JoinableQueue(maxsize=khajuri_cfg.PIPELINE.PREDDB_Q_SIZE)
         self.ppQueue = JoinableQueue(maxsize=khajuri_cfg.PIPELINE.PP_Q_SIZE)
@@ -39,6 +39,9 @@ class RunPipeline(object):
             if self.exitQueue.get() is None:
                 self.exitQueue.task_done()
                 break
+            else:
+                logging.error("Unknown message in exitQueue")
+                self.exitQueue.task_done()
         self.exitQueue.join()
         # join queues
         for i in xrange(self.clipToFramedb.numOfWorkers):
