@@ -17,12 +17,18 @@ class BboxReducer(object):
         self.num_classes = len(chia_cfg.TEST.POSITIVE_CLASSES)
         self.thresh = chia_cfg.TEST.NMS.DET_THRESH
         self.max_per_image = chia_cfg.TEST.NMS.BBOX_PER_IMG
+        self.save_bkgrnd = chia_cfg.TEST.SAVE_BKGRND
 
     def evaluate(self, scores, boxes, fc7):
         all_fc7_inds = []
-        nms_boxes = [[] for j in xrange(self.num_classes - 1)]
-        fc7_inds = [[] for j in xrange(self.num_classes - 1)]
-        for j in xrange(1, self.num_classes):
+        clsStartIdx = 1
+        clsSize = self.num_classes - 1
+        if self.save_bkgrnd:
+            clsStartIdx = 0
+            clsSize = self.num_classes
+        nms_boxes = [[] for j in xrange(clsSize)]
+        fc7_inds = [[] for j in xrange(clsSize)]
+        for j in xrange(clsStartIdx, self.num_classes):
             # limit number of boxes through threshold and max_per_image
             inds = np.where(scores[:, j] > self.thresh)[0]
             thresh_scores = scores[inds, j]
