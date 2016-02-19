@@ -43,15 +43,15 @@ class BboxReducer(object):
             if len(dets) > 0:
                 keep = nms(dets, self.thresh)
                 if len(keep) > 0:
-                    nms_boxes[j-1] = dets[keep, :].copy()
+                    nms_boxes[j - clsStartIdx] = dets[keep, :].copy()
                     # keep track of fc7 scores
                     orig_inds = inds[top_inds[keep]]
                     for idx in orig_inds:
                         if idx not in all_fc7_inds:
                             all_fc7_inds.append(idx)
-                            fc7_inds[j-1].append(len(all_fc7_inds) - 1)
+                            fc7_inds[j - clsStartIdx].append(len(all_fc7_inds) - 1)
                         else:
-                            fc7_inds[j-1].append(all_fc7_inds.index(idx))
+                            fc7_inds[j - clsStartIdx].append(all_fc7_inds.index(idx))
                     # end for idx
                 # end if
             # end if len(dets)

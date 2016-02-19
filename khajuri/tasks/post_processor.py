@@ -8,6 +8,7 @@ class PostProcessorError(Exception):
 class PostProcessor(Task):
     def __init__(self, scoreThreshs, interThreshs):
         self.findConfusions = FindConfusions(scoreThreshs, interThreshs)
+        self.fileSaver = FileSaver()
 
     def start(self):
         pass
