@@ -18,6 +18,7 @@ class BboxReducer(object):
         self.thresh = chia_cfg.TEST.NMS.DET_THRESH
         self.max_per_image = chia_cfg.TEST.NMS.BBOX_PER_IMG
         self.save_bkgrnd = chia_cfg.TEST.SAVE_BKGRND
+        self.save_fc7 = chia_cfg.TEST.SAVE_FC7
 
     def evaluate(self, scores, boxes, fc7):
         all_fc7_inds = []
@@ -57,4 +58,16 @@ class BboxReducer(object):
             # end if len(dets)
         # end for class
         fc7_scores = fc7[all_fc7_inds, :]
+        # add zdist
+        sortedScores = np.sort(fc7_scores)[:,-5:]
+        zDist = np.std(sortedScores[:],1) - np.std(sortedScores[:,:-1],1)
+        for idx, cls_boxes in enumerate(nms_boxes):
+            fc7Idx = fc7_inds[idx]
+            if len(fc7Idx) > 0:
+                nms_boxes[idx] = np.hstack(
+                    (cls_boxes, zDist[fc7Idx][:, np.newaxis])).astype(np.float32)
+        # done zdist
+        if not self.save_fc7:
+            fc7_inds = [[] for j in xrange(clsSize)]
+            fc7_scores = []
         return nms_boxes, fc7_inds, fc7_scores

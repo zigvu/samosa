@@ -14,20 +14,23 @@ class FindConfusions(object):
             nmsBoxes = pred['nms_boxes']
             confMat = self._confusion_mat(nmsBoxes)
             confInds = OrderedDict()
-            for sth in self.scoreThreshs:
-                confInds[sth] = OrderedDict()
-                for ith in self.interThreshs:
-                    confInds[sth][ith] = OrderedDict()
-                    for cls1Idx in xrange(numCls):
-                        confInds[sth][ith][cls1Idx] = OrderedDict()
-                        for cls2Idx in xrange(numCls):
-                            if cls1Idx != cls2Idx:
-                                confInds[sth][ith][cls1Idx][cls2Idx] = self._confusion_inds(
-                                    nmsBoxes, confMat, sth, ith, cls1Idx, cls2Idx)
-                        # end cls2Idx
-                    # end cls1Idx
-                # end ith
-            # end sth
+            for sth1 in self.scoreThreshs:
+                confInds[sth1] = OrderedDict()
+                for sth2 in self.scoreThreshs:
+                    confInds[sth1][sth2] = OrderedDict()
+                    for ith in self.interThreshs:
+                        confInds[sth1][sth2][ith] = OrderedDict()
+                        for cls1Idx in xrange(numCls):
+                            confInds[sth1][sth2][ith][cls1Idx] = OrderedDict()
+                            for cls2Idx in xrange(numCls):
+                                if cls1Idx != cls2Idx:
+                                    confInds[sth1][sth2][ith][cls1Idx][cls2Idx] = self._confusion_inds(
+                                        nmsBoxes, confMat, sth1, sth2, ith, cls1Idx, cls2Idx)
+                            # end cls2Idx
+                        # end cls1Idx
+                    # end ith
+                # end sth2
+            # end sth1
             confdb[fn] = OrderedDict()
             confdb[fn]['conf_mat'] = confMat
             confdb[fn]['conf_inds'] = confInds
@@ -62,12 +65,12 @@ class FindConfusions(object):
                 confMat[idxCls1][idxCls2] = self._intersect(bboxesCls1, bboxesCls2)
         return confMat
 
-    def _confusion_inds(self, nms_boxes, confMat, scThresh, inThresh, cls1Idx, cls2Idx):
+    def _confusion_inds(self, nms_boxes, confMat, cls1ScThresh, cls2ScThresh, inThresh, cls1Idx, cls2Idx):
         """Indices of nms_boxes that have above threshold confusion"""
         nmsConfIdxs = []
         for i, cls1Box in enumerate(nms_boxes[cls1Idx]):
             for j, cls2Box in enumerate(nms_boxes[cls2Idx]):
                 if confMat[cls1Idx][cls2Idx][i][j] > inThresh and \
-                        cls1Box[4] > scThresh and cls2Box[4] > scThresh:
+                        cls1Box[4] > cls1ScThresh and cls2Box[4] > cls2ScThresh:
                     nmsConfIdxs.append(i)
         return nmsConfIdxs

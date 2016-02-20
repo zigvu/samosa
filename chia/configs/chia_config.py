@@ -29,7 +29,9 @@ chia_cfg.TEST.ITERATION_ID = None
 # Classes
 chia_cfg.TEST.POSITIVE_CLASSES = []
 chia_cfg.TEST.AVOID_CLASSES = []
-chia_cfg.TEST.SAVE_BKGRND = True
+# Data save choices
+chia_cfg.TEST.SAVE_BKGRND = False
+chia_cfg.TEST.SAVE_FC7 = False
 # Folders and files
 chia_cfg.TEST.FOLDERS = edict()
 chia_cfg.TEST.FOLDERS.OUTPUT = '/tmp'
