@@ -7,7 +7,6 @@ import json
 import _init_paths
 from chia.configs.chia_config import chia_cfg
 
-from chia.datasets.clips_to_frames import ClipsToFrames
 from chia.datasets.train_creator import TrainCreator
 from chia.train.train_config import TrainConfig
 from chia.train.train_templater import TrainTemplater
@@ -27,8 +26,8 @@ def parse_args():
                         help='Base caffe model for fine tuning', required=True)
     parser.add_argument('--annotation_folder', dest='annotation_folder',
                         help='Path to annotation folder', required=True)
-    parser.add_argument('--clip_folder', dest='clip_folder',
-                        help='Path to clip folder', required=True)
+    parser.add_argument('--frame_folder', dest='frame_folder',
+                        help='Path to frame folder', required=True)
 
     args = parser.parse_args()
 
@@ -49,10 +48,7 @@ if __name__ == '__main__':
 
     FileUtils.symlink(args.parent_model, chia_cfg.TRAIN.FILES.PARENT_MODEL)
 
-    frameFolder = args.annotation_folder
-    clipsToFrames = ClipsToFrames(args.clip_folder, args.annotation_folder, frameFolder)
-    clipsToFrames.extract
-    dataCreator = TrainCreator(args.annotation_folder, frameFolder)
+    dataCreator = TrainCreator(args.annotation_folder, args.frame_folder)
     dataset = TrainDataset(dataCreator)
     fineTuner = FineTuner(dataset)
     fineTuner.train()

@@ -1,3 +1,4 @@
+import socket
 from easydict import EasyDict as edict
 
 __CH = edict()
@@ -9,11 +10,17 @@ khajuri_cfg = __CH
 # Rabbit
 # ----------------
 khajuri_cfg.RABBIT = edict()
-khajuri_cfg.RABBIT.IS_RABBIT_RUN = False
+khajuri_cfg.RABBIT.IS_RABBIT_RUN = True
+khajuri_cfg.RABBIT.ROUTES = edict()
+khajuri_cfg.RABBIT.ROUTES.AMQP_URL = 'localhost'
+khajuri_cfg.RABBIT.ROUTES.EXCHANGE = 'samosa.khajuri_pipeline'
+khajuri_cfg.RABBIT.ROUTES.CLIP_IN_SERVER_ROUTING_KEY = 'samosa.khajuri_pipeline.clip_in.server.{}'.format(socket.gethostname())
+khajuri_cfg.RABBIT.ROUTES.RESULT_OUT_SERVER_ROUTING_KEY = 'samosa.khajuri_pipeline.result_out.server.{}'.format(socket.gethostname())
+khajuri_cfg.RABBIT.ROUTES.RESULT_OUT_SERVER_RESPONSE_ROUTING_KEY = 'samosa.khajuri_pipeline.result_out.client.{}'.format(socket.gethostname())
 # Pipeline
 # ----------------
 khajuri_cfg.PIPELINE = edict()
-khajuri_cfg.PIPELINE.IS_DRY_RUN = True
+khajuri_cfg.PIPELINE.IS_DRY_RUN = False
 khajuri_cfg.PIPELINE.TEMPFS = '/tmp/pipeline'
 khajuri_cfg.PIPELINE.EVALUATE_FPS = 5
 khajuri_cfg.PIPELINE.GPU_IDS = [0]

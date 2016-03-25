@@ -8,9 +8,9 @@ chia_cfg = __CH
 # ------------------------------------------------------------------------------
 # Train
 chia_cfg.TRAIN = edict()
-# Iteration
-chia_cfg.TRAIN.ITERATION_ID = None
-chia_cfg.TRAIN.PARENT_ITERATION_ID = None
+# ChiaModel
+chia_cfg.TRAIN.CHIA_MODEL_ID = None
+chia_cfg.TRAIN.PARENT_CHIA_MODEL_ID = None
 chia_cfg.TRAIN.IS_MAJOR_ITERATION = False
 chia_cfg.TRAIN.MAX_ITERS = 100
 # Classes
@@ -24,8 +24,8 @@ chia_cfg.TRAIN.FILES = edict()
 # ------------------------------------------------------------------------------
 # Test
 chia_cfg.TEST = edict()
-# Iteration
-chia_cfg.TEST.ITERATION_ID = None
+# ChiaModel
+chia_cfg.TEST.CHIA_MODEL_ID = None
 # Classes
 chia_cfg.TEST.POSITIVE_CLASSES = []
 chia_cfg.TEST.AVOID_CLASSES = []

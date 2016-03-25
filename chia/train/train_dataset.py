@@ -18,7 +18,7 @@ class TrainDatasetError(Exception):
 class TrainDataset(datasets.imdb):
     def __init__(self, data_creator):
         logging.info("Creating training dataset")
-        datasets.imdb.__init__(self, chia_cfg.TRAIN.ITERATION_ID)
+        datasets.imdb.__init__(self, chia_cfg.TRAIN.CHIA_MODEL_ID)
         self._data_creator = data_creator
         self._classes = chia_cfg.TRAIN.POSITIVE_CLASSES
         self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))

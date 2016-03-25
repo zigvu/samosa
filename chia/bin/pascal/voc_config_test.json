@@ -1,6 +1,6 @@
 {
   "mode": "test",
-  "iteration_id": "voc_2007_trainval_after_change",
+  "chia_model_id": "voc_2007_trainval_after_change",
   "gpu_device_id": 0,
   "positive_classes": [
     "aeroplane", "bicycle", "bird", "boat",

@@ -1,5 +1,11 @@
 EXP_DIR: zigvu_end2end
 TRAIN:
+  # scales of 70%, 100%, and 130%
+  SCALES: [504, 720, 936]
+  # max size has to be the longest side of largest scaled image
+  MAX_SIZE: 1664
+  # for logo objects, no need to flip
+  USE_FLIPPED: False
   HAS_RPN: True
   IMS_PER_BATCH: 1
   BBOX_NORMALIZE_TARGETS_PRECOMPUTED: True
@@ -12,3 +18,7 @@ TRAIN:
   USE_PREFETCH: True
 TEST:
   HAS_RPN: True
+  # scales of 100%
+  SCALES: [720]
+  # max size has to be the longest side of largest scaled image
+  MAX_SIZE: 1280

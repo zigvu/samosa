@@ -5,6 +5,8 @@ class Clip(object):
     def __init__(self):
         self.clip_id = None
         self.clip_path = None
+        # rabbit communication message
+        self.clip_eval_details = None
         # format:
         # {fn: cv2_im, }
         self.framedb = None
@@ -23,4 +25,6 @@ class Clip(object):
         #                        -> blob: [[ inter_score ]] -> shape (num_boxes_cls1, num_boxes_cls2)
         # }
         self.confdb = None
+        # format:
+        # {base_path:, pickle: 'base_path/clip_id.pkl', json: 'base_path/clip_id.json', }
         self.result_path = None

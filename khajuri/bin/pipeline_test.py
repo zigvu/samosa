@@ -7,6 +7,7 @@ import argparse
 
 import _init_paths
 
+from khajuri.configs.khajuri_config import khajuri_cfg
 from khajuri.pipeline.run_pipeline import RunPipeline
 from khajuri.multi.clip import Clip
 
@@ -30,17 +31,22 @@ if __name__ == '__main__':
 
     args = parse_args()
 
+    khajuri_cfg.PIPELINE.IS_DRY_RUN = True
+    khajuri_cfg.RABBIT.IS_RABBIT_RUN = False
     runPipeline = RunPipeline()
 
     allClipFiles = glob.glob("{}/*.mp4".format(args.clip_folder))
     for clipFile in allClipFiles:
         clipNumber = os.path.splitext(os.path.basename(clipFile))[0]
-        clipOutPath = os.path.join(args.output_path, clipNumber)
 
         clip = Clip()
         clip.clip_id = clipNumber
         clip.clip_path = clipFile
-        clip.result_path = os.path.join(clipOutPath, 'clip.pkl')
+        clip.result_path = {
+            'base_path': args.output_path,
+            'pickle': os.path.join(args.output_path, '{}.pkl'.format(clipNumber)),
+            'json': os.path.join(args.output_path, '{}.json'.format(clipNumber))
+        }
 
         runPipeline.clipdbQueue.put(clip)
         logging.debug('RabbitToClip: process clip: {}'.format(clip.clip_id))

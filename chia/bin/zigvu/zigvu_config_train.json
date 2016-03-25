@@ -1,8 +1,8 @@
 {
   "mode": "train",
   "output_folder": "/tmp",
-  "iteration_id": "cv1",
-  "parent_iteration_id": "ZF.v2.caffemodel",
+  "chia_model_id": "3",
+  "parent_chia_model_id": "2",
   "iteration_type": "major",
   "num_caffe_iteration": 100,
   "gpu_device_id": 0,

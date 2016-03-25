@@ -7,6 +7,7 @@ import argparse
 import json
 import _init_paths
 
+from khajuri.configs.khajuri_config import khajuri_cfg
 from khajuri.pipeline.run_pipeline import RunPipeline
 from khajuri.multi.clip import Clip
 
@@ -42,6 +43,7 @@ if __name__ == '__main__':
     logging.debug('Start testing.')
 
     args = parse_args()
+    khajuri_cfg.PIPELINE.GPU_IDS = [0, 1]
 
     with open(args.config_file) as f:
         configHash = json.load(f)
@@ -61,12 +63,15 @@ if __name__ == '__main__':
     allClipFiles = glob.glob("{}/*.mp4".format(args.clip_folder))
     for clipFile in allClipFiles:
         clipNumber = os.path.splitext(os.path.basename(clipFile))[0]
-        clipOutPath = os.path.join(args.output_path, clipNumber)
 
         clip = Clip()
         clip.clip_id = clipNumber
         clip.clip_path = clipFile
-        clip.result_path = os.path.join(clipOutPath, 'clip.pkl')
+        clip.result_path = {
+            'base_path': args.output_path,
+            'pickle': os.path.join(args.output_path, '{}.pkl'.format(clipNumber)),
+            'json': os.path.join(args.output_path, '{}.json'.format(clipNumber))
+        }
 
         runPipeline.clipdbQueue.put(clip)
         logging.debug('RabbitToClip: process clip: {}'.format(clip.clip_id))
@@ -75,4 +80,7 @@ if __name__ == '__main__':
     runPipeline.join()
     caffeTime.toc()
     logging.info("Total time for all clip evaluation: {}".format(caffeTime.total_time))
-    logging.info("Avg. time for each clip evaluation: {}".format(caffeTime.total_time/len(allClipFiles)))
+    if len(allClipFiles) > 0:
+        logging.info("Avg. time for each clip evaluation: {}".format(
+            caffeTime.total_time/len(allClipFiles)
+        ))

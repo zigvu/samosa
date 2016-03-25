@@ -1,21 +1,33 @@
 import json
 
+from khajuri.configs.khajuri_config import khajuri_cfg
+from khajuri.multi.clip import Clip
+
 from messaging.messages.clip_eval_details import ClipEvalDetails
 from messaging.messages.header import Header
 
 class ClipIngestHandler(object):
     """Handle clip data from nimki"""
 
-    def __init__(self, clipdbQueue):
+    def __init__(self, clipIngestQueue):
         """Initialize values"""
-        self.clipdbQueue = clipdbQueue
+        self.clipIngestQueue = clipIngestQueue
 
     def handle(self, headers, message):
         print "Putting on queue, clip: {}".format(message['clipId'])
 
         clipEvalHeaders = Header(headers)
         clipEvalMessage = ClipEvalDetails(message)
-        self.clipdbQueue.put(clipEvalMessage)
+        if khajuri_cfg.RABBIT.IS_RABBIT_RUN:
+            clip = Clip()
+            clip.clip_id = clipEvalMessage.message['clipId']
+            if clip.clip_id == '':
+                clip.clip_id = None
+            clip.clip_path = clipEvalMessage.message['localClipPath']
+            clip.clip_eval_details = clipEvalMessage
+            self.clipIngestQueue.put(clip)
+        else:
+            self.clipIngestQueue.put(clipEvalMessage)
 
         clipEvalHeaders.setStateSuccess()
         responseHeaders = clipEvalHeaders.message

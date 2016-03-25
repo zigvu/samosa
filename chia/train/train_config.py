@@ -38,8 +38,8 @@ class TrainConfig(object):
             raise TrainConfigError("Supplied config is not a training config")
         cfg.GPU_ID = int(ch['gpu_device_id'])
         # zigvu specific configs
-        chia_cfg.TRAIN.ITERATION_ID = ch['iteration_id']
-        chia_cfg.TRAIN.PARENT_ITERATION_ID = ch['parent_iteration_id']
+        chia_cfg.TRAIN.CHIA_MODEL_ID = ch['chia_model_id']
+        chia_cfg.TRAIN.PARENT_CHIA_MODEL_ID = ch['parent_chia_model_id']
         chia_cfg.TRAIN.IS_MAJOR_ITERATION = ch['iteration_type'] == 'major'
         chia_cfg.TRAIN.MAX_ITERS = int(ch['num_caffe_iteration'])
         # add background class with index 0
@@ -50,7 +50,7 @@ class TrainConfig(object):
 
     def _create_folders(self):
         chia_cfg.TRAIN.FOLDERS.ROOT = os.path.join(
-                chia_cfg.TRAIN.FOLDERS.OUTPUT, chia_cfg.TRAIN.ITERATION_ID)
+                chia_cfg.TRAIN.FOLDERS.OUTPUT, chia_cfg.TRAIN.CHIA_MODEL_ID)
         chia_cfg.TRAIN.FOLDERS.CACHE = os.path.join(chia_cfg.TRAIN.FOLDERS.ROOT, 'cache')
         FileUtils.mkdir_p(chia_cfg.TRAIN.FOLDERS.CACHE)
         chia_cfg.TRAIN.FOLDERS.PROTOTXT = os.path.join(chia_cfg.TRAIN.FOLDERS.ROOT, 'prototxt')
@@ -65,5 +65,5 @@ class TrainConfig(object):
         chia_cfg.TRAIN.FILES.PROTOTXT_TRAIN = os.path.join(
                 chia_cfg.TRAIN.FOLDERS.PROTOTXT, 'train.prototxt')
 
-        chia_cfg.TRAIN.FILES.OUTPUT_MODEL = os.path.join(chia_cfg.TRAIN.FOLDERS.MODEL, chia_cfg.TRAIN.ITERATION_ID)
-        chia_cfg.TRAIN.FILES.PARENT_MODEL = os.path.join(chia_cfg.TRAIN.FOLDERS.MODEL, chia_cfg.TRAIN.PARENT_ITERATION_ID)
+        chia_cfg.TRAIN.FILES.OUTPUT_MODEL = os.path.join(chia_cfg.TRAIN.FOLDERS.MODEL, chia_cfg.TRAIN.CHIA_MODEL_ID)
+        chia_cfg.TRAIN.FILES.PARENT_MODEL = os.path.join(chia_cfg.TRAIN.FOLDERS.MODEL, chia_cfg.TRAIN.PARENT_CHIA_MODEL_ID)

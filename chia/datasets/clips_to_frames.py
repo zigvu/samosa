@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 from tools.frames.frame_extractor import FrameExtractor
 
+# NOTE: helper class not used currently
 
 class ClipsToFramesError(Exception):
     pass

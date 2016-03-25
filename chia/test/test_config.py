@@ -40,13 +40,13 @@ class TestConfig(object):
         cfg.GPU_ID = int(ch['gpu_device_id'])
 
         # zigvu specific configs
-        chia_cfg.TEST.ITERATION_ID = ch['iteration_id']
+        chia_cfg.TEST.CHIA_MODEL_ID = ch['chia_model_id']
         # add background class with index 0
         chia_cfg.TEST.POSITIVE_CLASSES =  ['__background__'] + ch['positive_classes']
         chia_cfg.TEST.AVOID_CLASSES = ch['avoid_classes']
 
     def _create_folders(self):
-        chia_cfg.TEST.FOLDERS.ROOT = os.path.join(chia_cfg.TEST.FOLDERS.OUTPUT, chia_cfg.TEST.ITERATION_ID)
+        chia_cfg.TEST.FOLDERS.ROOT = os.path.join(chia_cfg.TEST.FOLDERS.OUTPUT, chia_cfg.TEST.CHIA_MODEL_ID)
         chia_cfg.TEST.FOLDERS.CACHE = os.path.join(chia_cfg.TEST.FOLDERS.ROOT, 'cache')
         FileUtils.mkdir_p(chia_cfg.TEST.FOLDERS.CACHE)
         chia_cfg.TEST.FOLDERS.PROTOTXT = os.path.join(chia_cfg.TEST.FOLDERS.ROOT, 'prototxt')
@@ -57,4 +57,4 @@ class TestConfig(object):
 
     def _create_files(self):
         chia_cfg.TEST.FILES.PROTOTXT_TEST = os.path.join(chia_cfg.TEST.FOLDERS.PROTOTXT, 'test.prototxt')
-        chia_cfg.TEST.FILES.CURRENT_MODEL = os.path.join(chia_cfg.TEST.FOLDERS.MODEL, chia_cfg.TEST.ITERATION_ID)
+        chia_cfg.TEST.FILES.CURRENT_MODEL = os.path.join(chia_cfg.TEST.FOLDERS.MODEL, chia_cfg.TEST.CHIA_MODEL_ID)

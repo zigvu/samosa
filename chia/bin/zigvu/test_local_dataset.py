@@ -67,7 +67,11 @@ if __name__ == '__main__':
         clip = Clip()
         clip.clip_id = clipNumber
         clip.clip_path = clipFile
-        clip.result_path = os.path.join(clipOutPath, 'clip.pkl')
+        clip.result_path = {
+            'base_path': clipOutPath,
+            'pickle': os.path.join(clipOutPath, '{}.pkl'.format(clipNumber)),
+            'json': os.path.join(clipOutPath, '{}.json'.format(clipNumber))
+        }
 
         # extract frames
         frameExtractorTime.tic()
@@ -81,7 +85,7 @@ if __name__ == '__main__':
         caffeTime.toc()
         # save to pickle
         pickleTime.tic()
-        with open(clip.result_path, 'wb') as f:
+        with open(clip.result_path['pickle'], 'wb') as f:
             clip.framedb = None
             pickle.dump(clip, f)
         pickleTime.toc()
