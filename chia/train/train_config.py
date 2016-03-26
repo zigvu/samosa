@@ -36,10 +36,12 @@ class TrainConfig(object):
         ch = config_hash
         if ch['mode'] != 'train':
             raise TrainConfigError("Supplied config is not a training config")
-        cfg.GPU_ID = int(ch['gpu_device_id'])
+        # if need to use non-default gpu
+        if 'gpu_device_id' in ch:
+            cfg.GPU_ID = int(ch['gpu_device_id'])
         # zigvu specific configs
-        chia_cfg.TRAIN.CHIA_MODEL_ID = ch['chia_model_id']
-        chia_cfg.TRAIN.PARENT_CHIA_MODEL_ID = ch['parent_chia_model_id']
+        chia_cfg.TRAIN.CHIA_MODEL_ID = str(ch['chia_model_id'])
+        chia_cfg.TRAIN.PARENT_CHIA_MODEL_ID = str(ch['parent_chia_model_id'])
         chia_cfg.TRAIN.IS_MAJOR_ITERATION = ch['iteration_type'] == 'major'
         chia_cfg.TRAIN.MAX_ITERS = int(ch['num_caffe_iteration'])
         # add background class with index 0

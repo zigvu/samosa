@@ -1,3 +1,5 @@
+import logging
+
 from khajuri.multi.task import Task
 from khajuri.postprocess.find_confusions import FindConfusions
 from khajuri.tasks.file_saver import FileSaver
@@ -16,7 +18,8 @@ class PostProcessor(Task):
 
     def process(self, clip):
         logging.debug('{}: process clip: {}'.format(self.taskName, clip.clip_id))
-        clip.confdb = self.findConfusions.confusions(clip.preddb)
+        #clip.confdb = self.findConfusions.confusions(clip.preddb)
+        clip.confdb = {}
         clip = self.fileSaver.process(clip)
         # after save, data not needed
         clip.predb = None

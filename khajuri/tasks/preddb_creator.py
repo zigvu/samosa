@@ -1,3 +1,5 @@
+import logging
+
 from khajuri.multi.task import Task
 
 from chia.test.frame_evaluater import FrameEvaluater

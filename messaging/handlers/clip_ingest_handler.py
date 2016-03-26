@@ -1,3 +1,4 @@
+import logging
 import json
 
 from khajuri.configs.khajuri_config import khajuri_cfg
@@ -14,7 +15,7 @@ class ClipIngestHandler(object):
         self.clipIngestQueue = clipIngestQueue
 
     def handle(self, headers, message):
-        print "Putting on queue, clip: {}".format(message['clipId'])
+        logging.debug("Putting on queue, clip: {}".format(message['clipId']))
 
         clipEvalHeaders = Header(headers)
         clipEvalMessage = ClipEvalDetails(message)

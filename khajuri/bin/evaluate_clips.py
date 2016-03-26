@@ -2,6 +2,7 @@
 
 import logging
 import os
+import subprocess
 import glob
 import argparse
 import json
@@ -33,6 +34,8 @@ def parse_args():
                         help='Path to clips', required=True)
     parser.add_argument('--output_path', dest='output_path',
                         help='Output folder path', required=True)
+    parser.add_argument('--no_use_rabbit', dest='no_use_rabbit',
+                        help='Use rabbit? (default: True)', action='store_true')
 
     args = parser.parse_args()
 
@@ -43,13 +46,21 @@ if __name__ == '__main__':
     logging.debug('Start testing.')
 
     args = parse_args()
-    khajuri_cfg.PIPELINE.GPU_IDS = [0, 1]
 
     with open(args.config_file) as f:
         configHash = json.load(f)
 
     config = TestConfig(configHash)
     # config.reset_folders()
+
+    khajuri_cfg.PIPELINE.GPU_IDS = []
+    for line in subprocess.check_output(['nvidia-smi', '--list-gpus']).split('\n'):
+        if 'GPU ' in line:
+            khajuri_cfg.PIPELINE.GPU_IDS += [int(line.split('GPU ')[1].split(':')[0])]
+
+    if args.no_use_rabbit:
+        khajuri_cfg.RABBIT.IS_RABBIT_RUN = False
+
     templater = TestTemplater()
 
     FileUtils.symlink(args.test_model, chia_cfg.TEST.FILES.CURRENT_MODEL)

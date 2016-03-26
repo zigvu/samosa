@@ -1,6 +1,7 @@
 import os
 import pickle
 import json
+import logging
 from collections import OrderedDict
 import numpy as np
 
@@ -20,7 +21,7 @@ class FileSaver(Task):
 
     def process(self, clip):
         logging.debug('{}: process clip: {}'.format(self.taskName, clip.clip_id))
-        FileUtils.mkdir_p(clip.result_path['basepath'])
+        FileUtils.mkdir_p(clip.result_path['base_path'])
         with open(clip.result_path['pickle'], 'wb') as f:
             pickle.dump(clip, f)
         clipJson = self.clip_to_json(clip)
