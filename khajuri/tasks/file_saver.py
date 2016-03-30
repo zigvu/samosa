@@ -42,7 +42,7 @@ class FileSaver(Task):
         # format as per rails requirement
         data = OrderedDict()
         numCls = len(preddb[preddb.keys()[0]]['nms_boxes'])
-        for fn in confdb.keys():
+        for fn in preddb.keys():
             # format:
             # {cls1Idx: {cls2Idx: {cls1BboxIdx: [intersects_cls2BboxIdx,] }, }, }
             inters = OrderedDict()
@@ -60,7 +60,7 @@ class FileSaver(Task):
                         continue
                     inters[cls1Idx][cls2Idx] = OrderedDict()
                     thresh[cls1Idx][cls2Idx] = OrderedDict()
-                    conf = confdb[fn]['conf_mat'][cls1Idx][cls2Idx]
+                    conf = confdb[fn][cls1Idx][cls2Idx]
                     interClsIdx = np.argwhere(conf > 0.001)
                     if len(conf) > 0 and len(interClsIdx) > 1:
                         for bb in interClsIdx:

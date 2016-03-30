@@ -19,9 +19,7 @@ class Clip(object):
         # }, }
         self.predb = None
         # format:
-        # {fn:
-        #   conf_inds: [cls1ScThresh][cls2ScThresh][interThresh][cls1Idx][cls2Idx] => [idx_of_inter],
-        #   conf_mat: [[ blob ]] -> shape: (num_classes, num_classes),
+        # {fn: [[ blob ]] -> shape: (num_classes, num_classes),
         #                        -> blob: [[ inter_score ]] -> shape (num_boxes_cls1, num_boxes_cls2)
         # }
         self.confdb = None
