@@ -18,8 +18,7 @@ class PostProcessor(Task):
 
     def process(self, clip):
         logging.debug('{}: process clip: {}'.format(self.taskName, clip.clip_id))
-        #clip.confdb = self.findConfusions.confusions(clip.preddb)
-        clip.confdb = {}
+        clip.confdb = self.findConfusions.confusions(clip.preddb)
         clip = self.fileSaver.process(clip)
         # after save, data not needed
         clip.predb = None
