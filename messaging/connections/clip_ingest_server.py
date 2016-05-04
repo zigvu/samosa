@@ -17,9 +17,9 @@ class ClipIngestServer(threading.Thread):
     def run(self):
         logging.info('Starting ClipIngestServer thread')
         clipIngestHandler = ClipIngestHandler(self.clipIngestQueue)
-        rpc = RpcServer((
+        rpc = RpcServer(
             khajuri_cfg.RABBIT.ROUTES.AMQP_URL,
             khajuri_cfg.RABBIT.ROUTES.EXCHANGE,
             khajuri_cfg.RABBIT.ROUTES.CLIP_IN_SERVER_ROUTING_KEY,
-            self.clipIngestQueue,)
+            clipIngestHandler
         )

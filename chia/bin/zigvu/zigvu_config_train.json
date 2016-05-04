@@ -1,6 +1,7 @@
 {
   "mode": "train",
   "output_folder": "/tmp",
+  "iteration_id": "ITERATION_ID",
   "chia_model_id": "3",
   "parent_chia_model_id": "2",
   "iteration_type": "major",

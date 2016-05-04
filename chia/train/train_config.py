@@ -47,8 +47,8 @@ class TrainConfig(object):
         # add background class with index 0
         chia_cfg.TRAIN.POSITIVE_CLASSES =  ['__background__'] + ch['positive_classes']
         chia_cfg.TRAIN.AVOID_CLASSES = ch['avoid_classes']
-        # output folder
-        chia_cfg.TRAIN.FOLDERS.OUTPUT = ch['output_folder']
+        # output folder - has to match with nimki/servers/samosa/chia/file_namager.rb
+        chia_cfg.TRAIN.FOLDERS.OUTPUT = os.path.join('/tmp/chia', str(ch['iteration_id']), 'build')
 
     def _create_folders(self):
         chia_cfg.TRAIN.FOLDERS.ROOT = os.path.join(

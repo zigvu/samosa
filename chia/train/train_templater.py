@@ -12,8 +12,9 @@ class TrainTemplaterError(Exception):
     pass
 
 class TrainTemplater(object):
-    def __init__(self):
+    def __init__(self, is_temp_proto = False):
         logging.info("Templating training prototxts")
+        self.isTempProto = is_temp_proto
         self._template_prototxt()
 
     def _template_prototxt(self):
@@ -30,8 +31,15 @@ class TrainTemplater(object):
     def _template_train_prototxt(self):
         template = '{}/configs/models/ZF/zigvu_end2end/train.prototxt'.format(CHIA_ROOT)
         num_classes = len(chia_cfg.TRAIN.POSITIVE_CLASSES)
+        bboxPredName = 'bbox_pred'
+        clsScoreName = 'cls_score'
+        if self.isTempProto:
+            bboxPredName = 'bbox_pred_TEMP'
+            clsScoreName = 'cls_score_TEMP'
         replace = {
             'ZIGVU_NUM_CLASSES': num_classes,
-            'ZIGVU_BBOX_PRED_OUTPUT': num_classes * 4
+            'ZIGVU_BBOX_PRED_OUTPUT': num_classes * 4,
+            'ZIGVU_BBOX_PRED_NAME': bboxPredName,
+            'ZIGVU_CLS_SCORE_NAME': clsScoreName
         }
         FileChanger.regex(template, replace, chia_cfg.TRAIN.FILES.PROTOTXT_TRAIN)

@@ -1,6 +1,7 @@
 {
   "mode": "test",
   "chia_model_id": "3",
+  "capture_evaluation_id": "CAPTURE_EVALUATION_ID",
   "gpu_device_id": 0,
   "positive_classes": [
     "cocacola", "castrol", "continentalTire",

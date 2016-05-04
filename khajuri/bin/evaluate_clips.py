@@ -43,6 +43,7 @@ def parse_args():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger('pika').setLevel(logging.INFO)
     logging.debug('Start testing.')
 
     args = parse_args()
@@ -64,6 +65,7 @@ if __name__ == '__main__':
     templater = TestTemplater()
 
     FileUtils.symlink(args.test_model, chia_cfg.TEST.FILES.CURRENT_MODEL)
+    khajuri_cfg.PIPELINE.OUTPUT_BASE_FOLDER = args.output_path
 
     # keep track of time
     caffeTime = Timer()

@@ -2,6 +2,7 @@
 
 import logging
 import os
+import re
 import shutil
 
 class FileChangerError(Exception):
@@ -29,6 +30,6 @@ class FileChanger(object):
             with open(input_file, "rt") as fin:
                 for line in fin:
                     for search_term, replace_term in regex_hash.iteritems():
-                        line = line.replace(search_term, str(replace_term))
+                        line = re.sub('\\b' + search_term + '\\b', str(replace_term), line)
                     fout.write(line)
         # done

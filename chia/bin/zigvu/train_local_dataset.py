@@ -28,7 +28,8 @@ def parse_args():
                         help='Path to annotation folder', required=True)
     parser.add_argument('--frame_folder', dest='frame_folder',
                         help='Path to frame folder', required=True)
-
+    parser.add_argument("--temp_model", help="Temporary model prior to finetuning",
+                        action="store_true")
     args = parser.parse_args()
 
     return args
@@ -44,7 +45,7 @@ if __name__ == '__main__':
 
     config = TrainConfig(configHash)
     # config.reset_folders()
-    templater = TrainTemplater()
+    templater = TrainTemplater(args.temp_model)
 
     FileUtils.symlink(args.parent_model, chia_cfg.TRAIN.FILES.PARENT_MODEL)
 

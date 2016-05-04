@@ -1,5 +1,6 @@
 import logging
 import json
+import os
 
 from khajuri.configs.khajuri_config import khajuri_cfg
 from khajuri.multi.clip import Clip
@@ -13,6 +14,7 @@ class ClipIngestHandler(object):
     def __init__(self, clipIngestQueue):
         """Initialize values"""
         self.clipIngestQueue = clipIngestQueue
+        self.outputPath = khajuri_cfg.PIPELINE.OUTPUT_BASE_FOLDER
 
     def handle(self, headers, message):
         logging.debug("Putting on queue, clip: {}".format(message['clipId']))
@@ -26,6 +28,11 @@ class ClipIngestHandler(object):
                 clip.clip_id = None
             clip.clip_path = clipEvalMessage.message['localClipPath']
             clip.clip_eval_details = clipEvalMessage
+            clip.result_path = {
+                'base_path': self.outputPath,
+                'pickle': os.path.join(self.outputPath, '{}.pkl'.format(clip.clip_id)),
+                'json': os.path.join(self.outputPath, '{}.json'.format(clip.clip_id))
+            }
             self.clipIngestQueue.put(clip)
         else:
             self.clipIngestQueue.put(clipEvalMessage)

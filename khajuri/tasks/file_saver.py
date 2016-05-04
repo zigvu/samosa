@@ -37,7 +37,7 @@ class FileSaver(Task):
         clipJson['meta'] = OrderedDict()
         clipJson['meta']['clip_id'] = int(clip.clip_id)
         if clip.clip_eval_details != None:
-            clipJson['meta']['cap_eval_id'] = int(clip.clip_eval_details.message['capEvalId'])
+            clipJson['meta']['cap_eval_id'] = str(clip.clip_eval_details.message['capEvalId'])
         clipJson['meta']['scale'] = 1.0 # this doesn't change per RCNN
         # format as per rails requirement
         data = OrderedDict()

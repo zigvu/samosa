@@ -46,9 +46,12 @@ class TestConfig(object):
         # add background class with index 0
         chia_cfg.TEST.POSITIVE_CLASSES =  ['__background__'] + ch['positive_classes']
         chia_cfg.TEST.AVOID_CLASSES = ch['avoid_classes']
+        # configs folder - has to match with nimki/servers/samosa/khajuri/file_namager.rb
+        chia_cfg.TEST.FOLDERS.ROOT = os.path.join(
+            '/tmp/khajuri', str(ch['capture_evaluation_id']), 'configs'
+        )
 
     def _create_folders(self):
-        chia_cfg.TEST.FOLDERS.ROOT = os.path.join(chia_cfg.TEST.FOLDERS.OUTPUT, chia_cfg.TEST.CHIA_MODEL_ID)
         chia_cfg.TEST.FOLDERS.CACHE = os.path.join(chia_cfg.TEST.FOLDERS.ROOT, 'cache')
         FileUtils.mkdir_p(chia_cfg.TEST.FOLDERS.CACHE)
         chia_cfg.TEST.FOLDERS.PROTOTXT = os.path.join(chia_cfg.TEST.FOLDERS.ROOT, 'prototxt')
